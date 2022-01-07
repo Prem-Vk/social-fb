@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}
+{{ user.username }}-Profile Page
+{% endblock title %}
+{% block content %}
+<img src="{{ profile.avatar.url }}" height="80px", width="80px">
+<p>Username : {{ profile.user.username }}</p> 
+<p>First Name : {{ profile.first_name }}</p>
+<p>Last Name : {{ profile.last_name }}</p>
+<p>Birth Date : {{ profile.birth_date }}</p>
+<p>Gender : {{ profile.gender }}</p>
+{% if profile.bio %}
+<p>Bio : {{ profile.bio }}</p>
+{% else %}
+<p> Bio : No Bio </p>
+{% endif %}
+{% if profile.country %}
+<p>Bio : {{ profile.country }}</p>
+{% else %}
+<p> Country : Asgard </p>
+{% endif %}
+{% endblock content %}

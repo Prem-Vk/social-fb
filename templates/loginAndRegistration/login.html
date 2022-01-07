@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Facebook - Login{% endblock title %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'LandR/login.css' %}">
+{% endblock css %}
+{% block content %}
+<section class="container">
+    <div class="header">
+        <h1> Social-FB</h1>
+    </div>
+    <div class="content">
+        <form method='post'>
+            {% csrf_token %}
+            {{form.as_p}}
+            <input type="submit" value="Log In">
+        </form>
+            <br>
+            <br>
+            <a href="forgot.html">Forgotten password?</a>
+            <br>
+            <br>
+            <hr>
+            <br>
+            <a href="{% url 'login:register' %}"><button>Create New Account</button></a>
+    </div>
+</section>
+{% endblock content %}

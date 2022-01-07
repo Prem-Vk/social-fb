@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Facebook - Home page{% endblock title %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'home/home.css' %}">
+{% endblock css %}
+
+{% block content %}
+<section class="container">
+    <div class="header">
+        <h1> Social-FB</h1>
+    </div>
+    <div class="social">
+        <img src="{% static 'icons/home-page.png' %}" alt="Home", height="40px", width="40px">
+        <img src="{% static 'icons/friends.png' %}" alt="Friends", height="40px", width="60px">
+        <img src="{% static 'icons/videos.png' %}" alt="Watch", height="40px", width="40px">
+        <img src="{% static 'icons/market.png' %}" alt="Marketplace", height="40px", width="60px">
+        <img src="{% static 'icons/people.png' %}" alt="Groups", height="40px", width="40px">
+    </div>
+    <div class='user'>
+        <div class='profile'>
+            <a href="{% url 'login:profile' user=user.username %}" ><h3>{{ user.username }}</h3></a>
+            <img src="{% static 'icons/home-page.png' %}" alt="", height="40px", width="40px">
+        </div>
+        <img src="{% static 'icons/home-page.png' %}" alt="", height="40px", width="40px">
+        <img src="{% static 'icons/home-page.png' %}" alt="", height="40px", width="40px">
+        <img src="{% static 'icons/home-page.png' %}" alt="", height="40px", width="40px">
+        <img src="{% static 'icons/home-page.png' %}" alt="", height="40px", width="40px">
+    </div>
+</section>
+{% endblock content %}

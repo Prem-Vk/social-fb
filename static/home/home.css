@@ -1,0 +1,23 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+.container{
+    background-color: white;
+    padding: 1vh 1vw 0 1vw;
+    display: flex;
+    justify-content: space-between;
+}
+body{
+    background-color:ghostwhite;
+}
+.social img{
+ margin: 0 1.5vw;
+}
+.profile, .user{
+    display: flex;
+}
+.header h1{
+    color: dodgerblue;
+}
