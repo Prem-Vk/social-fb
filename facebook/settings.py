@@ -21,11 +21,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "&4bi4hs-r*v_=@hamj*#hw8mb)kf2qbog^&)5y&u!$6x8^)dwh"
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# 1
+# DEBUG = True
+DEBUG = os.getenv("DEBUG", "True") == "False"
 
+# 2
+# ALLOWED_HOSTS = []
 ALLOWED_HOSTS = ["social-fb.herokuapp.com"]
 
 
@@ -78,24 +82,15 @@ WSGI_APPLICATION = "facebook.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": "d3hop7ckkhf7q0",
-#         "USER": "rbwlydehylatgn",
-#         "PASSWORD": "fbbeadcd832ee73859e9412d2a926e52f7e9d29c497e04e81d4201e02b85075e",
-#         "HOST": "ec2-3-227-55-25.compute-1.amazonaws.com",
-#         "PORT": "5432",
-#     }
-# }
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "social",
-        "USER": "prem",
-        "PASSWORD": "Poco@2021",
-        "HOST": "localhost",
-        "PORT": "5432",
+        "NAME": os.environ.get("DB_NAME"),
+        "USER": os.environ.get("DB_USER"),
+        "PASSWORD": os.environ.get("DB_PASS"),
+        "HOST": os.environ.get("HOST"),
+        "PORT": os.environ.get("PORT"),
     }
 }
 

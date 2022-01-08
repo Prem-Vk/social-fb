@@ -2,21 +2,77 @@
 {% block title %}
 {{ user.username }}-Profile Page
 {% endblock title %}
+{% block css %}
+<style>
+    .container{
+        display: flex;
+    }
+    .read-only, .edit{
+        justify-content: center;
+        grid-template-columns: auto auto;
+    }
+    .edit form{
+        display: grid;
+        grid-template-columns: auto auto;
+    }
+    button{
+        height: 4vh;
+        margin: 2vh 0 0 2vw;
+        width:8vw;
+    }
+    span{
+        display: none;
+    }
+</style>
+{% endblock css %}
 {% block content %}
-<img src="{{ profile.avatar.url }}" height="80px", width="80px">
-<p>Username : {{ profile.user.username }}</p> 
-<p>First Name : {{ profile.first_name }}</p>
-<p>Last Name : {{ profile.last_name }}</p>
-<p>Birth Date : {{ profile.birth_date }}</p>
-<p>Gender : {{ profile.gender }}</p>
-{% if profile.bio %}
-<p>Bio : {{ profile.bio }}</p>
-{% else %}
-<p> Bio : No Bio </p>
-{% endif %}
-{% if profile.country %}
-<p>Bio : {{ profile.country }}</p>
-{% else %}
-<p> Country : Asgard </p>
-{% endif %}
+<section class="container">
+    <div class="read-only" id="read" style="display:grid;">
+        <img src="{{ profile.avatar.url }}" height="80px", width="80px">
+        <p>Username : {{ profile.user.username }}</p> 
+        <p>First Name : {{ profile.first_name }}</p>
+        <p>Last Name : {{ profile.last_name }}</p>
+        <p>Birth Date : {{ profile.birth_date }}</p>
+        <p>Gender : {{ profile.gender }}</p>
+        {% if profile.bio %}
+            <p>Bio : {{ profile.bio }}</p>
+        {% else %}
+            <p> Bio : No Bio </p>
+        {% endif %}
+        {% if profile.country %}
+            <p>Bio : {{ profile.country }}</p>
+        {% else %}
+            <p> Country : Asgard </p>
+        {% endif %}
+        </div>
+    <div class="edit" id="edit-only" style="display: none;">
+        <form method="post" enctype="multipart/form-data">
+            {{ user_form.as_p }}
+            {{ profile_form.as_p }}
+            {% csrf_token %}
+            <p><input type="submit" value="Save changes"></p>
+        </form>
+    </div>
+<button onclick="toggle_visibility();">Edit Profile</button>
+</section>
+<section class="posts">
+    {% for posts in all_post %}
+    <p>{{ posts.content}}</p>
+    <img src="{{ posts.image.url }}" alt="">
+    {% endfor %}
+</section>
+<script>
+function toggle_visibility() {
+       var e = document.getElementById('read');
+       var k = document.getElementById('edit-only')
+       if(e.style.display == 'grid'){
+          e.style.display = 'none';
+          k.style.display = 'grid';
+       }
+       else{
+          k.style.display ='none';
+          e.style.display = 'grid';
+       }
+   }
+</script>
 {% endblock content %}

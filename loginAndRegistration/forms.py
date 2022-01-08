@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.forms import widgets
-from .models import Profile
+from .models import Profile, Post
 
 
 class LoginForm(forms.Form):
@@ -44,3 +44,36 @@ class UserProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ("first_name", "last_name", "email", "gender", "birth_date")
+
+
+class UserProfileEditForm(forms.ModelForm):
+    birth_date = forms.DateField(widget=forms.DateInput(attrs={"type": "date"}))
+
+    class Meta:
+        model = Profile
+        fields = (
+            "first_name",
+            "last_name",
+            "email",
+            "gender",
+            "birth_date",
+            "private",
+            "bio",
+            "country",
+            "avatar",
+        )
+
+
+class UserEditForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ("username",)
+
+
+class PostForm(forms.ModelForm):
+    content = forms.CharField()
+    image = forms.ImageField()
+
+    class Meta:
+        model = Post
+        fields = ["content", "image"]

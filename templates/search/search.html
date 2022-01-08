@@ -1,10 +1,11 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Facebook - Home page{% endblock title %}
+{% block title %}
+Search-Facebook
+{% endblock title %}
 {% block css %}
 <link rel="stylesheet" href="{% static 'home/home.css' %}">
 {% endblock css %}
-
 {% block content %}
 <section class="container">
     <div class="header">
@@ -31,28 +32,20 @@
         <a href="{% url 'login:logout' %}">Log Out</a>
     </div>
 </section>
-<section class="main">
-    <div class="all-tabs">
-        <a href="">Profile</a>
-        <a href="">Friends</a>
-    </div>
-    <div class="posts">
-        <div class="post-create">
-            <form action="" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ post_form.as_p }}
-                <button type="submit">Submit</button>
-            </form>
-        </div>
-        <div class="friends-post">
-            {% for one_post in all_posts  %}
-                    <p>{{ one_post.content}}</p>
-                    <img src="{{ one_post.image.url }}" alt="">
-            {% endfor %}
-        </div>
-    </div>
-    <div class="contacts">
-        friends
-    </div>
+<section class="friends" style="display: flex;flex-direction: column;align-items: center;">
+    <h2> Search For: {{ search }}</h2>
+    <input type="hidden" name="search" value="{{ search }}">
+    <p>Search results</p>
+        {% for rp in pending %}
+            <p> pending {{rp}}</p>
+        {% endfor %}
+        {% for ra in accepted  %}
+            <p> Accepted {{ra}}</p>
+        {% endfor %}
+        {% for friend in friends %}
+            {% if friend.user not in previous_relation %}
+                <p>Add Friend {{ friend.user }}
+            {% endif %}
+        {% endfor %}
 </section>
 {% endblock content %}

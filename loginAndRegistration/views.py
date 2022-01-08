@@ -1,11 +1,19 @@
 from django.shortcuts import render, redirect
-from .forms import LoginForm, UserRegistrationForm, UserProfileForm
+from .forms import (
+    LoginForm,
+    UserRegistrationForm,
+    UserProfileForm,
+    UserEditForm,
+    UserProfileEditForm,
+    PostForm,
+)
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
-from .models import Profile
+from .models import Profile, Post, relation
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
+from django.db.models import Q
 
 
 def UserLogin(request):
@@ -58,7 +66,7 @@ def UserRegistration(request):
             new_user.save()
             new_profile = profile_form.save(commit=False)
             new_profile.user = new_user
-            new_profile.slug = new_user.username
+            new_profile.slug = new_user.username.replace(" ", "-")
             new_profile.save()
             return render(
                 request,
@@ -83,16 +91,132 @@ def logout_request(request):
 @login_required
 def home_page(request, username):
     profile = Profile.objects.get(user=request.user)
-    print("suer3")
+    if request.method == "POST":
+        post_form = PostForm(request.POST, request.FILES, prefix="post")
+        print("done")
+        if post_form.is_valid():
+            print("valid")
+            post = post_form.save(commit=False)
+            post.author = profile
+            post.save()
+            post_form = PostForm(prefix="post")
+            all_posts = Post.objects.all()
+            return render(
+                request,
+                "home/home.html",
+                {
+                    "user": request.user,
+                    "profile": profile,
+                    "post_form": post_form,
+                    "all_posts": all_posts,
+                },
+            )
+    else:
+        post_form = PostForm(prefix="post")
+        all_posts = Post.objects.all()
     return render(
         request,
         "home/home.html",
-        {"user": request.user, "profile": profile},
+        {
+            "user": request.user,
+            "profile": profile,
+            "post_form": post_form,
+            "all_posts": all_posts,
+        },
     )
 
 
 @login_required
 def profile_detail(request, user):
-    print("hello")
     profile = Profile.objects.get(user=request.user)
-    return render(request, "profile/profile.html", {"profile": profile})
+    all_post = Post.objects.filter(author=profile)
+    if request.method == "POST":
+        user_form = UserEditForm(instance=request.user, data=request.POST)
+        profile_form = UserProfileEditForm(
+            instance=request.user.profile, data=request.POST, files=request.FILES
+        )
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            profile = Profile.objects.get(user=request.user)
+            return render(
+                request,
+                "profile/profile.html",
+                {
+                    "profile": profile,
+                    "user_form": user_form,
+                    "profile_form": profile_form,
+                },
+            )
+    else:
+        user_form = UserEditForm(instance=request.user)
+        profile_form = UserProfileEditForm(instance=request.user.profile)
+    return render(
+        request,
+        "profile/profile.html",
+        {
+            "profile": profile,
+            "user_form": user_form,
+            "profile_form": profile_form,
+            "all_post": all_post,
+        },
+    )
+
+
+@login_required
+def SearchFriend(request):
+    pending = []
+    accepted = []
+    if request.method == "POST":
+        search = request.POST.get("search")
+        find = search.split(" ")
+        if len(find) == 1:
+            friends = Profile.objects.filter(
+                Q(first_name=find[0]) | Q(last_name=find[0])
+            )
+            relations = relation.objects.filter(friend1=request.user)
+            previous_relations = [req.friend2.user for req in relations]
+            for friend in friends:
+                for rel in relations:
+                    if friend.user == rel.friend2.user:
+                        if rel.request_status == "P":
+                            pending.append(friend.user)
+                        else:
+                            accepted.append(friend.user)
+        else:
+            friends = Profile.objects.filter(
+                Q(first_name__contains=find[0]) & Q(last_name__contains=find[1])
+            )
+            relations = relation.objects.filter(friend1=request.user)
+            previous_relations = [req.friend2.user for req in relations]
+            for friend in friends:
+                for rel in relations:
+                    if friend.user == rel.friend2.user:
+                        if rel.request_status == "P":
+                            pending.append(friend.user)
+                        else:
+                            accepted.append(friend.user)
+        return render(
+            request,
+            "search/search.html",
+            {
+                "user": request.user,
+                "search": search,
+                "friends": friends,
+                "relations": relations,
+                "previous_relation": previous_relations,
+                "pending": pending,
+                "accepted": accepted,
+                "search": search,
+            },
+        )
+    else:
+        return redirect(
+            reverse("login:home", kwargs={"username": request.user.username})
+        )
+
+
+def login_redirect(request):
+    print("hello")
+    return redirect(reverse("login:login"))
