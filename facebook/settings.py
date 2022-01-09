@@ -26,7 +26,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 # 1
 # DEBUG = True
-DEBUG = False
+DEBUG = True
 
 # 2
 # ALLOWED_HOSTS = []
@@ -133,7 +133,8 @@ USE_TZ = True
 STATIC_URL = "/static/"
 
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "static")
+MEDIA_ROOT = os.path.join(BASE_DIR, "static/media")
 django_heroku.settings(locals())
