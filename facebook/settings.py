@@ -45,11 +45,12 @@ INSTALLED_APPS = [
     # local
     "loginAndRegistration.apps.LoginandregistrationConfig",
     # Third_party
+    "whitenoise.runserver_nostatic",
 ]
 
-CRISPY_TEMPLATE_PACK = "bootstrap4"
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -136,4 +137,4 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 django_heroku.settings(locals())
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
+MEDIA_ROOT = os.path.join(BASE_DIR, "static/")

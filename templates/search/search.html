@@ -34,17 +34,34 @@ Search-Facebook
 </section>
 <section class="friends" style="display: flex;flex-direction: column;align-items: center;">
     <h2> Search For: {{ search }}</h2>
-    <input type="hidden" name="search" value="{{ search }}">
     <p>Search results</p>
-        {% for rp in pending %}
-            <p> pending {{rp}}</p>
+    {% for rp in pending %}
+    <p> pending {{rp}}</p>
+    <form action="" method="post" class ="friend-form">
+        {% csrf_token %}
+        <input type="hidden" name="pending" value="{{ rp }}">
+        <input type="hidden" name="search" value="{{ search }}">
+        <button type="submit">Accept request</button>
+            </form>
         {% endfor %}
         {% for ra in accepted  %}
             <p> Accepted {{ra}}</p>
+            <form action="" method="post" class="friend-form">
+                {% csrf_token %}
+                <input type="hidden" name="accepted" value="{{ ra }}">
+                <input type="hidden" name="search" value="{{ search }}">
+                <button type="submit">Chat</button>
+            </form>
         {% endfor %}
         {% for friend in friends %}
             {% if friend.user not in previous_relation %}
-                <p>Add Friend {{ friend.user }}
+                <p>Add Friend {{ friend.user }}</p>
+                <form action="" method="post" class="friend-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="new" value = "{{ friend.user }}"">
+                    <input type="hidden" name="search" value="{{ search }}">
+                    <button type="submit">Send Request</button>
+                </form>
             {% endif %}
         {% endfor %}
 </section>

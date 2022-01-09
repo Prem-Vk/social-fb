@@ -14,6 +14,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.db.models import Q
+from django.db import transaction
 
 
 def UserLogin(request):
@@ -170,6 +171,8 @@ def SearchFriend(request):
     accepted = []
     if request.method == "POST":
         search = request.POST.get("search")
+        status_pending = request.POST.get("pending")
+        print(status_pending)
         find = search.split(" ")
         if len(find) == 1:
             friends = Profile.objects.filter(
