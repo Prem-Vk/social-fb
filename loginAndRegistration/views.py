@@ -172,7 +172,9 @@ def SearchFriend(request):
     if request.method == "POST":
         search = request.POST.get("search")
         status_pending = request.POST.get("pending")
-        print(status_pending)
+        status_accepted = request.POST.get("accepted")
+        status_new = request.POST.get("new")
+        print(status_pending, status_accepted, status_new)
         find = search.split(" ")
         if len(find) == 1:
             friends = Profile.objects.filter(
