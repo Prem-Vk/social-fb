@@ -2,6 +2,7 @@ from datetime import time
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractUser
+from django.http import request
 from django.utils import timezone
 from django.core.validators import FileExtensionValidator
 from django.urls import reverse
@@ -28,6 +29,9 @@ class Profile(models.Model):
 
     def __str__(self) -> str:
         return f"{self.first_name} {self.last_name}"
+
+    def accepted(self):
+        return self.friends.all().filter(request_status="A")
 
 
 class Post(models.Model):

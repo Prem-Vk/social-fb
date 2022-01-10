@@ -39,7 +39,7 @@ body{
 .friends-post img{
     width:20vw;
 }
-.contacts{
+.friends, .new-friends{
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
 }

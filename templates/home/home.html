@@ -8,7 +8,7 @@
 {% block content %}
 <section class="container">
     <div class="header">
-        <h1> Social-FB</h1>
+        <a href="{% url 'login:home' request.user.username %}" style="text-decoration: none;"><h1> Social-FB</h1></a>
         <form method="post" action="{% url 'login:search' %}">
             {% csrf_token %}
             <input type="text" name="search" id="" placeholder="Search FB">
@@ -25,7 +25,7 @@
     </div>
     <div class='user'>
         <div class='profile'>
-            <img src="{% static 'icons/home-page.png' %}" alt="", height="40px", width="40px">
+            <img src="{{ request.user.profile.avatar.url }}" alt="", height="40px", width="40px">
             <a href="{% url 'login:profile' user=user.username %}" ><h3>{{ user.username }}</h3></a>
         </div>
         <a href="{% url 'login:logout' %}">Log Out</a>
@@ -33,8 +33,8 @@
 </section>
 <section class="main">
     <div class="all-tabs">
-        <a href="">Profile</a>
-        <a href="">Friends</a>
+        <a href="{% url 'login:profile' user=user.username %}">Profile</a>
+        <a href="{% url 'login:friends' %}">Friends</a>
     </div>
     <div class="posts">
         <div class="post-create">
@@ -48,11 +48,15 @@
             {% for one_post in all_posts  %}
                     <p>{{ one_post.content}}</p>
                     <img src="{{ one_post.image.url }}" alt="">
+                    <p>Posted By: {{one_post.author}}
             {% endfor %}
         </div>
     </div>
     <div class="contacts">
-        friends
+        <h2>Friends</h1>
+        {% for friend in all_friends %}
+            <p>{{friend.friend2.first_name}} {{friend.friend2.last_name}}</p>
+        {% endfor %}
     </div>
 </section>
 {% endblock content %}

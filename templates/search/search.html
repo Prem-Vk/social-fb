@@ -9,7 +9,7 @@ Search-Facebook
 {% block content %}
 <section class="container">
     <div class="header">
-        <h1> Social-FB</h1>
+        <a href="{% url 'login:home' request.user.username %}" style="text-decoration: none;"><h1> Social-FB</h1></a>
         <form method="post" action="{% url 'login:search' %}">
             {% csrf_token %}
             <input type="text" name="search" id="" placeholder="Search FB">

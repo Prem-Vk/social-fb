@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Facebook - Home page{% endblock title %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'friends/friends.css' %}">
+{% endblock css %}
+
+{% block content %}
+<section class="container">
+    <div class="header">
+        <a href="{% url 'login:home' request.user.username %}" style="text-decoration: none;"><h1> Social-FB</h1></a>
+        <form method="post" action="{% url 'login:search' %}">
+            {% csrf_token %}
+            <input type="text" name="search" id="" placeholder="Search FB">
+        <img src="{% static 'icons/search.png' %}" alt="Home", height="20px", width="20px">
+        <button type="submit"></button>
+        </form>
+    </div>
+    <div class="social">
+        <img src="{% static 'icons/home-page.png' %}" alt="Home", height="40px", width="40px">
+        <img src="{% static 'icons/friends.png' %}" alt="Friends", height="40px", width="60px">
+        <img src="{% static 'icons/videos.png' %}" alt="Watch", height="40px", width="40px">
+        <img src="{% static 'icons/market.png' %}" alt="Marketplace", height="40px", width="60px">
+        <img src="{% static 'icons/people.png' %}" alt="Groups", height="40px", width="40px">
+    </div>
+    <div class='user'>
+        <div class='profile'>
+            <img src="{% static 'icons/home-page.png' %}" alt="", height="40px", width="40px">
+            <a href="{% url 'login:profile' user=user.username %}" ><h3>{{ user.username }}</h3></a>
+        </div>
+        <a href="{% url 'login:logout' %}">Log Out</a>
+    </div>
+</section>
+<section class="new-friends">
+    <h3>Request Pending</h3>
+    {% for friend in new_friends %}
+    <div class="chat">
+        {% if friend.sender_or_receiver == "R" %}
+            <p>{{ friend.friend2.first_name }} {{friend.friend2.last_name}}</p>
+            <form action="" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="accept" value="{{ friend.friend2.user.username }}">
+                <button type="submit">Accept Request</button>
+            </form>
+        {% endif %}
+    </div>
+    {% endfor %}
+</section>
+<section class="friends">
+    <h3>Friends</h3>
+    {% for friend in friends %}
+        <div class="chat">
+        <p>{{ friend.friend2.first_name }} {{friend.friend2.last_name}}</p>
+        <form action="" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="accept" value="{{ friend.friend2.user.username }}">
+            <button type="submit">Chat</button>
+        </form>
+        </div>
+    {% endfor %}
+</section>
+{% endblock content%}

@@ -102,11 +102,18 @@ def home_page(request, username):
             post.author = profile
             post.save()
             post_form = PostForm(prefix="post")
-            all_friends = relation.objects.filter(friend1=request.user)
+            all_friends = relation.objects.filter(
+                friend1=request.user, request_status="A"
+            )
+            print(all_friends)
             user_post = Post.objects.filter(author=request.user.profile)
-            all_posts = Post.objects.filter(
-                author__in=[people.friend2 for people in all_friends]
-            ).union(user_post)
+            all_posts = (
+                Post.objects.filter(
+                    author__in=[people.friend2 for people in all_friends]
+                )
+                .union(user_post)
+                .order_by("-updated")
+            )
             return render(
                 request,
                 "home/home.html",
@@ -115,16 +122,19 @@ def home_page(request, username):
                     "profile": profile,
                     "post_form": post_form,
                     "all_posts": all_posts,
+                    "all_friends": all_friends,
                 },
             )
     else:
         post_form = PostForm(prefix="post")
-        all_friends = relation.objects.filter(friend1=request.user)
+        all_friends = relation.objects.filter(friend1=request.user, request_status="A")
         user_post = Post.objects.filter(author=request.user.profile)
 
-        all_posts = Post.objects.filter(
-            author__in=[people.friend2 for people in all_friends]
-        ).union(user_post)
+        all_posts = (
+            Post.objects.filter(author__in=[people.friend2 for people in all_friends])
+            .union(user_post)
+            .order_by("-updated")
+        )
     return render(
         request,
         "home/home.html",
@@ -133,6 +143,7 @@ def home_page(request, username):
             "profile": profile,
             "post_form": post_form,
             "all_posts": all_posts,
+            "all_friends": all_friends,
         },
     )
 
@@ -220,6 +231,7 @@ def SearchFriend(request):
             ).filter(~Q(user=request.user))
             relations = relation.objects.filter(friend1=request.user)
             previous_relations = [req.friend2.user for req in relations]
+            print(previous_relations)
             for friend in friends:
                 for rel in relations:
                     if friend.user == rel.friend2.user:
@@ -263,3 +275,32 @@ def SearchFriend(request):
 def login_redirect(request):
     print("hello")
     return redirect(reverse("login:login"))
+
+
+@login_required
+def friends_page(request):
+    if request.method == "POST":
+        status_pending = request.POST.get("accept")
+        if status_pending is not None:
+            pend_user = User.objects.get(username=status_pending)
+            accept1 = relation.objects.get(
+                friend1=request.user, friend2=pend_user.profile
+            )
+            accept2 = relation.objects.get(
+                friend1=pend_user,
+                friend2=request.user.profile,
+            )
+            accept1.request_status = "A"
+            accept2.request_status = "A"
+            accept1.save()
+            accept2.save()
+        friends = relation.objects.filter(friend1=request.user, request_status="A")
+        new_friends = relation.objects.filter(friend1=request.user, request_status="P")
+    else:
+        friends = relation.objects.filter(friend1=request.user, request_status="A")
+        new_friends = relation.objects.filter(friend1=request.user, request_status="P")
+    return render(
+        request,
+        "friends/friends.html",
+        {"friends": friends, "new_friends": new_friends},
+    )
