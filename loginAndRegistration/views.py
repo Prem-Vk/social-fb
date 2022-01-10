@@ -102,7 +102,11 @@ def home_page(request, username):
             post.author = profile
             post.save()
             post_form = PostForm(prefix="post")
-            all_posts = Post.objects.all()
+            all_friends = relation.objects.filter(friend1=request.user)
+            user_post = Post.objects.filter(author=request.user.profile)
+            all_posts = Post.objects.filter(
+                author__in=[people.friend2 for people in all_friends]
+            ).union(user_post)
             return render(
                 request,
                 "home/home.html",
@@ -115,7 +119,12 @@ def home_page(request, username):
             )
     else:
         post_form = PostForm(prefix="post")
-        all_posts = Post.objects.all()
+        all_friends = relation.objects.filter(friend1=request.user)
+        user_post = Post.objects.filter(author=request.user.profile)
+
+        all_posts = Post.objects.filter(
+            author__in=[people.friend2 for people in all_friends]
+        ).union(user_post)
     return render(
         request,
         "home/home.html",
@@ -208,7 +217,7 @@ def SearchFriend(request):
         if len(find) == 1:
             friends = Profile.objects.filter(
                 Q(first_name=find[0]) | Q(last_name=find[0])
-            )
+            ).filter(~Q(user=request.user))
             relations = relation.objects.filter(friend1=request.user)
             previous_relations = [req.friend2.user for req in relations]
             for friend in friends:
@@ -221,7 +230,7 @@ def SearchFriend(request):
         else:
             friends = Profile.objects.filter(
                 Q(first_name__contains=find[0]) & Q(last_name__contains=find[1])
-            )
+            ).filter(~Q(user=request.user))
             relations = relation.objects.filter(friend1=request.user)
             previous_relations = [req.friend2.user for req in relations]
             for friend in friends:
