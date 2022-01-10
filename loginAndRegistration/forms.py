@@ -71,8 +71,11 @@ class UserEditForm(forms.ModelForm):
 
 
 class PostForm(forms.ModelForm):
-    content = forms.CharField()
-    image = forms.ImageField()
+    content = forms.CharField(
+        label="",
+        widget=forms.TextInput(attrs={"placeholder": "What's on your mind today?"}),
+    )
+    image = forms.ImageField(label="")
 
     class Meta:
         model = Post
