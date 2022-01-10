@@ -1,10 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Facebook - Home page{% endblock title %}
+{% block title %}Facebook - Comment Page{% endblock title %}
 {% block css %}
-<link rel="stylesheet" href="{% static 'home/home.css' %}">
+<link rel="stylesheet" href="{% static 'posts/post.css' %}">
 {% endblock css %}
-
 {% block content %}
 <section class="container">
     <div class="header">
@@ -31,38 +30,18 @@
         <a href="{% url 'login:logout' %}">Log Out</a>
     </div>
 </section>
-<section class="main">
-    <div class="all-tabs">
-        <a href="{% url 'login:profile' user=user.username %}">Profile</a>
-        <a href="{% url 'login:friends' %}">Friends</a>
-    </div>
+<section class="post">
     <div class="posts">
-        <div class="post-create">
-            <form action="" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ post_form.as_p }}
-                <button type="submit">Submit</button>
-            </form>
-        </div>
-        <div class="friends-post">
-            {% for one_post in all_posts  %}
-                    <div class="all-posts">
-                        <p>{{ one_post.content}}</p>
-                        <img src="{{ one_post.image.url }}" alt="">
-                        <p>Posted By: {{one_post.author}}
-                        <div class="lc">
-                            <a href="">Like</a>
-                            <a href="{% url 'login:comment' one_post.pk %}">Comment</a>
-                        </div>
-                    </div>
-            {% endfor %}
-        </div>
-    </div>
-    <div class="contacts">
-        <h2>Friends</h1>
-        {% for friend in all_friends %}
-            <p>{{friend.friend2.first_name}} {{friend.friend2.last_name}}</p>
-        {% endfor %}
+        <p>{{ posts.content }}</p>
+        <img src="{{ posts.image.url }}" alt="">
+        <p>{{ posts.author }}</p>
     </div>
 </section>
-{% endblock content %}
+<section class="form">
+    <form action="" method="post" class="comment-form">
+        <input type="text" name="" id="">
+        <input type="hidden" name="post-id" value = "{{ pk }}" >
+        <button type="submit">Post</button>
+    </form>
+</section>
+{% endblock content%}

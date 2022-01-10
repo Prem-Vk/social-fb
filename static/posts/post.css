@@ -40,31 +40,29 @@ body{
     width:20vw;
     padding: 1vh 2vw;
 }
-.all-posts{
+.post{
+    margin-top: 2vh;
+}
+.posts{
     background-color: white;
-    margin: 1vh 0;
     box-shadow: 0 0 5px 2px black;
-    padding: 1vh 0;
 }
-.lc{
-    display: grid;
-    grid-template-columns: auto auto;
-    text-align: center;
-    text-decoration: none;
-    border-top: 0.5px solid black;
-    border-bottom: 0.5px solid black;
-    margin: 1vh 0.2vw;
+.form{
+    position: fixed;
+    bottom: 0;
+    margin: 1vh 1vw;
 }
-.lc a{
-    padding: 0.3vh 0;
-    text-decoration: none;
-    color:darkgray;
+.form input[type=text]{
+    width: 80vw;
+    border-radius: 20px;
+    height: 3vh;
+    border: 2px solid darkgray;
 }
-
-.lc a:hover{
-    color: blue;
-}
-.contacts{
-    display: flex;
-    flex-direction: column;
+.form button{
+    width:12vw;
+    background-color: dodgerblue;
+    color:white;
+    height: 3.5vh;
+    border-radius: 20px;
+    border: none;
 }

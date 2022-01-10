@@ -107,13 +107,11 @@ def home_page(request, username):
             )
             print(all_friends)
             user_post = Post.objects.filter(author=request.user.profile)
-            all_posts = (
-                Post.objects.filter(
-                    author__in=[people.friend2 for people in all_friends]
-                )
-                .union(user_post)
-                .order_by("-updated")
-            )
+            all_posts = Post.objects.filter(
+                author__in=[people.friend2 for people in all_friends]
+            ).union(user_post)
+            if all_posts:
+                all_posts.order_by("-updated")
             return render(
                 request,
                 "home/home.html",
@@ -130,11 +128,11 @@ def home_page(request, username):
         all_friends = relation.objects.filter(friend1=request.user, request_status="A")
         user_post = Post.objects.filter(author=request.user.profile)
 
-        all_posts = (
-            Post.objects.filter(author__in=[people.friend2 for people in all_friends])
-            .union(user_post)
-            .order_by("-updated")
-        )
+        all_posts = Post.objects.filter(
+            author__in=[people.friend2 for people in all_friends]
+        ).union(user_post)
+        if all_posts:
+            all_posts.order_by("-updated")
     return render(
         request,
         "home/home.html",
@@ -304,3 +302,11 @@ def friends_page(request):
         "friends/friends.html",
         {"friends": friends, "new_friends": new_friends},
     )
+
+
+@login_required
+def post_comment(request, pk):
+    if request.method == "POST":
+        pass
+    posts = Post.objects.get(id=pk)
+    return render(request, "posts/post.html", {"posts": posts})

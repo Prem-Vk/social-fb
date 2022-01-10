@@ -71,3 +71,17 @@ class relation(models.Model):
 
     def __str__(self):
         return f"{self.friend1} send friend request to {self.friend2.user} and the status is {self.request_status}"
+
+
+class Comment(models.Model):
+    user = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+    )
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    body = models.TextField(max_length=400)
+    created = models.DateField(auto_now_add=True)
+    updated = models.DateField(auto_now=True)
+
+    def __str__(self) -> str:
+        return str(self.pk)
