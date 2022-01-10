@@ -38,8 +38,8 @@ Search-Facebook
     {% for rp in pending %}
     <form action="" method="post" class ="friend-form">
         {% csrf_token %}
-        {% if rp.friend1 == request.user %}
-            <p>Request already send to {{rp.friend2.user}} </p>
+        {% if rp.sender_or_receiver == "S" and rp.request_status == "P" %}
+            <p>Request already send to {{rp.friend2.user}} Waiting for acceptance</p>
         {% else %}
         <input type="hidden" name="pending" value="{{ rp.friend2.user }}">
         <input type="hidden" name="search" value="{{ search }}">

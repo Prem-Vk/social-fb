@@ -178,20 +178,32 @@ def SearchFriend(request):
         find = search.split(" ")
         if status_pending is not None:
             pend_user = User.objects.get(username=status_pending)
-            accept = relation.objects.get(
+            accept1 = relation.objects.get(
                 friend1=request.user, friend2=pend_user.profile
             )
-            accept.request_status = "A"
-            accept.save()
-            relation.objects.create(
-                friend1=pend_user, friend2=request.user.profile, request_status="A"
+            accept2 = relation.objects.get(
+                friend1=pend_user,
+                friend2=request.user.profile,
             )
+            accept1.request_status = "A"
+            accept2.request_status = "A"
+            accept1.save()
+            accept2.save()
         if status_accepted is not None:
             pass
         if status_new is not None:
             pend_new = User.objects.get(username=status_new)
             relation.objects.create(
-                friend1=request.user, friend2=pend_new.profile, request_status="P"
+                friend1=request.user,
+                friend2=pend_new.profile,
+                sender_or_receiver="S",
+                request_status="P",
+            )
+            relation.objects.create(
+                friend1=pend_new,
+                friend2=request.user.profile,
+                sender_or_receiver="R",
+                request_status="P",
             )
         if len(find) == 1:
             friends = Profile.objects.filter(
@@ -216,7 +228,7 @@ def SearchFriend(request):
                 for rel in relations:
                     if friend.user == rel.friend2.user:
                         if rel.request_status == "P":
-                            pending.append(friend.user)
+                            pending.append(rel)
                         else:
                             accepted.append(friend.user)
         return render(
