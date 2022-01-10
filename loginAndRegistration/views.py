@@ -15,6 +15,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.db.models import Q
 from django.db import transaction
+from django.contrib.auth.models import User
 
 
 def UserLogin(request):
@@ -174,8 +175,24 @@ def SearchFriend(request):
         status_pending = request.POST.get("pending")
         status_accepted = request.POST.get("accepted")
         status_new = request.POST.get("new")
-        print(status_pending, status_accepted, status_new)
         find = search.split(" ")
+        if status_pending is not None:
+            pend_user = User.objects.get(username=status_pending)
+            accept = relation.objects.get(
+                friend1=request.user, friend2=pend_user.profile
+            )
+            accept.request_status = "A"
+            accept.save()
+            relation.objects.create(
+                friend1=pend_user, friend2=request.user.profile, request_status="A"
+            )
+        if status_accepted is not None:
+            pass
+        if status_new is not None:
+            pend_new = User.objects.get(username=status_new)
+            relation.objects.create(
+                friend1=request.user, friend2=pend_new.profile, request_status="P"
+            )
         if len(find) == 1:
             friends = Profile.objects.filter(
                 Q(first_name=find[0]) | Q(last_name=find[0])
@@ -186,7 +203,7 @@ def SearchFriend(request):
                 for rel in relations:
                     if friend.user == rel.friend2.user:
                         if rel.request_status == "P":
-                            pending.append(friend.user)
+                            pending.append(rel)
                         else:
                             accepted.append(friend.user)
         else:

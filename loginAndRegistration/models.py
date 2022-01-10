@@ -54,6 +54,7 @@ class Post(models.Model):
 
 class relation(models.Model):
     f_request = (("A", "Accepted"), ("P", "Pending"))
+    sr = (("S", "Sender"), ("R", "Receiver"))
     friend1 = models.ForeignKey(User, on_delete=models.CASCADE, related_name="friend1")
     friend2 = models.ForeignKey(
         Profile,
@@ -61,7 +62,8 @@ class relation(models.Model):
         related_name="friend2",
         verbose_name="Friend Request accepted or pending",
     )
+    sender_or_receiver = models.CharField(max_length=12, choices=sr)
     request_status = models.CharField(max_length=10, choices=f_request)
 
     def __str__(self):
-        return f"{self.friend1} send friend request to {self.friend2} and the status is {self.request_status}"
+        return f"{self.friend1} send friend request to {self.friend2.user} and the status is {self.request_status}"

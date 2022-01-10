@@ -36,12 +36,15 @@ Search-Facebook
     <h2> Search For: {{ search }}</h2>
     <p>Search results</p>
     {% for rp in pending %}
-    <p> pending {{rp}}</p>
     <form action="" method="post" class ="friend-form">
         {% csrf_token %}
-        <input type="hidden" name="pending" value="{{ rp }}">
+        {% if rp.friend1 == request.user %}
+            <p>Request already send to {{rp.friend2.user}} </p>
+        {% else %}
+        <input type="hidden" name="pending" value="{{ rp.friend2.user }}">
         <input type="hidden" name="search" value="{{ search }}">
         <button type="submit">Accept request</button>
+        {% endif %}
             </form>
         {% endfor %}
         {% for ra in accepted  %}
