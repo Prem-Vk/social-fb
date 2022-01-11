@@ -1,59 +1,77 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}
 {{ user.username }}-Profile Page
 {% endblock title %}
 {% block css %}
-<style>
-    .container{
-        display: flex;
-    }
-    .read-only, .edit{
-        justify-content: center;
-        grid-template-columns: auto auto;
-    }
-    .edit form{
-        display: grid;
-        grid-template-columns: auto auto;
-    }
-    button{
-        height: 4vh;
-        margin: 2vh 0 0 2vw;
-        width:8vw;
-    }
-    span{
-        display: none;
-    }
-</style>
+<link rel="stylesheet" href="{% static 'profile/profile.css' %}">
 {% endblock css %}
 {% block content %}
 <section class="container">
-    <div class="read-only" id="read" style="display:grid;">
-        <img src="{{ profile.avatar.url }}" height="80px", width="80px">
-        <p>Username : {{ profile.user.username }}</p> 
-        <p>First Name : {{ profile.first_name }}</p>
-        <p>Last Name : {{ profile.last_name }}</p>
-        <p>Birth Date : {{ profile.birth_date }}</p>
-        <p>Gender : {{ profile.gender }}</p>
-        {% if profile.bio %}
-            <p>Bio : {{ profile.bio }}</p>
-        {% else %}
-            <p> Bio : No Bio </p>
-        {% endif %}
-        {% if profile.country %}
-            <p>Bio : {{ profile.country }}</p>
-        {% else %}
-            <p> Country : Asgard </p>
-        {% endif %}
+    <div class="header">
+        <a href="{% url 'login:home' request.user.username %}" style="text-decoration: none;"><h1> Social-FB</h1></a>
+        <form method="post" action="{% url 'login:search' %}">
+            {% csrf_token %}
+            <input type="text" name="search" id="" placeholder="Search FB">
+        <img src="{% static 'icons/search.png' %}" alt="Home", height="20px", width="20px">
+        <button type="submit"></button>
+        </form>
+    </div>
+    <div class="social">
+        <img src="{% static 'icons/home-page.png' %}" alt="Home", height="40px", width="40px">
+        <img src="{% static 'icons/friends.png' %}" alt="Friends", height="40px", width="60px">
+        <img src="{% static 'icons/videos.png' %}" alt="Watch", height="40px", width="40px">
+        <img src="{% static 'icons/market.png' %}" alt="Marketplace", height="40px", width="60px">
+        <img src="{% static 'icons/people.png' %}" alt="Groups", height="40px", width="40px">
+    </div>
+    <div class='user'>
+        <div class='profile'>
+            <img src="{{ request.user.profile.avatar.url }}" alt="", height="40px", width="40px" class="profile-image">&nbsp;&nbsp;
+            <a href="{% url 'login:profile' user=user.username %}" ><h3>{{ user.username }}</h3></a>
         </div>
+        &nbsp;&nbsp;   
+        <a href="{% url 'login:logout' %}" class="logout">Log Out</a>
+    </div>
+</section>
+<section class="profile-data">
+    <div class="read-only" id="read" style="display:grid;">
+        <div class="profile-pic">
+            <img src="{{ profile.avatar.url }}" height="200px", width="200px">
+        </div>
+        <div class="data"> 
+            <p class = "name">{{ profile.first_name }} {{ profile.last_name }}</p>
+            <p class = "pro-data"><span class="design">Birth Date : </span> {{ profile.birth_date }}</p>
+            {% if  profile.gender == 'M'%}
+                <p class = "pro-data"><span class="design">Gender : </span> Male</p>
+            {% else %}
+                <p class = "pro-data"><span class="design">Gender : </span> Female</p>
+            {% endif %}
+            <p class = "pro-data"><span class="design">Email : </span>{{ profile.email }}</p>
+            {% if profile.bio %}
+                <p class = "pro-data"><span class="design">Bio : </span>{{ profile.bio }}</p>
+            {% else %}
+                <p class = "pro-data"><span class="design"> Bio : </span> No Bio </p>
+            {% endif %}
+            {% if profile.country %}
+                <p class = "pro-data"><span class="design">Country : </span>{{ profile.country }}</p>
+            {% else %}
+                <p class = "pro-data"><span class="design"> Country : </span> Asgard </p>
+            {% endif %}
+        </div>
+        <button onclick="toggle_visibility();" class="edit-button">Edit Profile</button>
+    </div>
     <div class="edit" id="edit-only" style="display: none;">
-        <form method="post" enctype="multipart/form-data">
+        <div class="profile-pic">
+            <img src="{{ profile.avatar.url }}" height="200px", width="200px">
+        </div>
+        <form method="post" enctype="multipart/form-data" class="data">
             {{ user_form.as_p }}
             {{ profile_form.as_p }}
             {% csrf_token %}
-            <p><input type="submit" value="Save changes"></p>
+            <p><input type="submit" value="Save changes" class="edit-button"></p>
         </form>
+        <button onclick="toggle_visibility();" class="edit-button">No changes required</button>
     </div>
-<button onclick="toggle_visibility();">Edit Profile</button>
 </section>
 <section class="posts">
     {% for posts in all_post %}

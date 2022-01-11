@@ -16,12 +16,55 @@
 }
 body{
     background-color:ghostwhite;
+    font-family: Arial, Helvetica, sans-serif;
 }
 .social img{
  margin: 0 2vw;
 }
-.profile, .user{
+.user{
     display: flex;
+}
+.profile{
+    display: flex;
+    padding: 1vh 1vw 1vh 1vw;
+    border-radius: 40px;
+}
+.profile-image{
+    border-radius: 100px;
+}
+.profile a{
+    text-decoration: none;
+}
+.logout{
+    text-decoration: none;
+    color: black;
+    padding: 1.7vh 1.2vw 1vh 1.2vw;
+    border-radius: 20px;
+}
+.profile h3{
+    font-family: Arial, Helvetica, sans-serif;
+    color: black;
+}
+.profile:hover{
+    background-color: rgb(200, 200, 206);
+}
+.logout:hover{
+    background-color: dodgerblue;
+    color: white;
+}
+.extra{
+    margin-top: 2vh;
+    padding: 1vh 4vw 1vh 1vw;
+}
+.all-f{
+    padding: 1.5vh 3vw 1.5vh 2vw;
+    text-decoration: none;
+    color: black;
+    border-radius: 20px;
+    font-weight: bold;
+}
+.all-f:hover{
+    background-color: rgb(200, 200, 206);
 }
 .header h1{
     color: dodgerblue;
@@ -56,6 +99,7 @@ body{
     border-radius: 20px;
     margin:0.7vh 0;
     border: 2px solid darkgray;
+    padding: 0 1vw;
 }
 .post-create input[type=text]::placeholder{
     text-align: center;

@@ -25,16 +25,20 @@
     </div>
     <div class='user'>
         <div class='profile'>
-            <img src="{{ request.user.profile.avatar.url }}" alt="", height="40px", width="40px">
+            <img src="{{ request.user.profile.avatar.url }}" alt="", height="40px", width="40px" class="profile-image">&nbsp;&nbsp;
             <a href="{% url 'login:profile' user=user.username %}" ><h3>{{ user.username }}</h3></a>
         </div>
-        <a href="{% url 'login:logout' %}">Log Out</a>
+        &nbsp;&nbsp;   
+        <a href="{% url 'login:logout' %}" class="logout">Log Out</a>
     </div>
 </section>
 <section class="main">
     <div class="all-tabs">
-        <a href="{% url 'login:profile' user=user.username %}">Profile</a>
-        <a href="{% url 'login:friends' %}">Friends</a>
+        <div class='profile extra'>
+            <img src="{{ request.user.profile.avatar.url }}" alt="", height="40px", width="40px" class="profile-image">&nbsp;&nbsp;
+            <a href="{% url 'login:profile' user=user.username %}" ><h3>{{ user.username }}</h3></a>
+        </div>
+        <a href="{% url 'login:friends' %}" class="all-f">Friends</a>
     </div>
     <div class="posts">
         <div class="post-create">

@@ -25,10 +25,11 @@
     </div>
     <div class='user'>
         <div class='profile'>
-            <img src="{% static 'icons/home-page.png' %}" alt="", height="40px", width="40px">
+            <img src="{{ request.user.profile.avatar.url }}" alt="", height="40px", width="40px" class="profile-image">&nbsp;&nbsp;
             <a href="{% url 'login:profile' user=user.username %}" ><h3>{{ user.username }}</h3></a>
         </div>
-        <a href="{% url 'login:logout' %}">Log Out</a>
+        &nbsp;&nbsp;   
+        <a href="{% url 'login:logout' %}" class="logout">Log Out</a>
     </div>
 </section>
 <section class="new-friends">
