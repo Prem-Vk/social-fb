@@ -82,12 +82,14 @@ body{
     width: 20vw;
     grid-column-start: 2;
     grid-row: 1/3;
+    box-shadow: 0 0 10px 2px lightgray;
 }
 .profile-pic{
     background-color: white;
     margin: 0 2vw;
     border-radius: 20px;
     padding: 2vh 2vw;
+    box-shadow: 0 0 10px 2px lightgray;
 }
 .profile-pic img{
     border-radius: 100px;
@@ -116,4 +118,142 @@ body{
     color: white;
     border: none;
     border-radius: 20px;
+}
+.data2{
+    background-color: white;
+    border-radius: 20px;
+    padding: 2vh 4vw 2vh 2vw;
+    width: 20vw;
+    grid-column-start: 2;
+    grid-row: 1/4;
+    box-shadow: 0 0 10px 2px lightgray;
+}
+.data2 input[type=text]{
+    border:none;
+    border-bottom: 2px solid darkgray;
+    border-radius: 4px;
+    margin: 0.5vh 0;
+    height: 3vh;
+    width: 12vw;
+    padding: 0 1vw;
+}
+.data2 input[type=text]:hover{
+    border-bottom: 2px solid dodgerblue;
+}
+
+.data2 input[type=date]{
+    border:none;
+    border-bottom: 2px solid darkgray;
+    border-radius: 4px;
+    margin: 0.5vh 0;
+    height: 3vh;
+    width: 12vw;
+    padding: 0 1vw;
+}
+
+.data2 select{
+    border:none;
+    border-bottom: 2px solid darkgray;
+    border-radius: 4px;
+    margin: 0.5vh 0;
+    height: 3vh;
+    width: 12vw;
+    padding: 0 1vw;
+    background-color: transparent;
+}
+
+.data2 input[type=checkbox]{
+    border:none;
+    border-bottom: 2px solid darkgray;
+    border-radius: 4px;
+    margin: 0.9vh 0;
+    padding: 0 1vw;
+}
+.data2 textarea{
+    border: 2px solid darkgray;
+    border-radius: 20px;
+    margin: 0.5vh 0;
+    height: 6vh;
+    width: 12vw;
+    padding: 0 1vw;
+}
+.data2 input[type=file]{
+    margin: 0.5vh 0;
+    height: 6vh;
+    width: 12vw;   
+}
+
+.posts{
+    display: grid;
+    grid-template-columns: auto auto;
+    margin: 1vh 0;
+    justify-content: center;
+}
+
+.friends{
+    background-color: white;
+    height: 20vh;
+    width:10vw;
+    overflow-y: auto;
+    padding: 2vh 1vw;
+    border-radius: 20px;
+    box-shadow: 0 0 10px 2px lightgray;
+}
+.friends h2{
+    padding: 0 0 0.5vh 0;
+    margin: 0 0 1vh 0;
+    border-bottom: 2px solid darkgray;
+}
+.profile-name{
+    display: flex;
+    padding-left: 1vw;
+    text-decoration: none;
+}
+.profile-name h4{
+    margin-top: 0.8vh;
+    padding-left: 0.9vw;
+    padding-bottom: 1vh;
+}
+.profile-name img{
+    border-radius: 100px;
+}
+.profile-name p{
+    text-decoration: none;
+    color: black;
+}
+.lc{
+    display: grid;
+    grid-template-columns: auto auto ;
+    text-align: center;
+    text-decoration: none;
+    border-top: 0.5px solid black;
+    margin: 1vh 0.8vw;
+}
+.lc a{
+    padding: 0.3vh 0;
+    text-decoration: none;
+    color:darkgray;
+}
+
+.lc a:hover{
+    color: blue;
+}
+.all-posts p{
+    padding-left: 1.3vw;
+    margin-top: 0.5vh;
+}
+.all-posts{
+    background-color: white;
+    margin: 2vh 1vw;
+    padding: 1vh 0;
+    border-radius: 20px;
+    box-shadow: 0 0 10px 2px lightgray;
+}
+.like {
+    display: flex;
+    margin-left: 0.5vw;
+}
+.all-posts .image{
+    width: 30vw;
+    max-height: 600px;
 }

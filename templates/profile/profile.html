@@ -64,20 +64,45 @@
         <div class="profile-pic">
             <img src="{{ profile.avatar.url }}" height="200px", width="200px">
         </div>
-        <form method="post" enctype="multipart/form-data" class="data">
+        <form method="post" enctype="multipart/form-data" class="data2">
             {{ user_form.as_p }}
             {{ profile_form.as_p }}
             {% csrf_token %}
-            <p><input type="submit" value="Save changes" class="edit-button"></p>
+            <p><button type="submit" class="edit-button">Save changes</button></p>
         </form>
         <button onclick="toggle_visibility();" class="edit-button">No changes required</button>
     </div>
 </section>
 <section class="posts">
-    {% for posts in all_post %}
-    <p>{{ posts.content}}</p>
-    <img src="{{ posts.image.url }}" alt="">
-    {% endfor %}
+    <div class="friends">
+        <h2>Friends</h2>
+            {% for friend in all_friends %}
+                <a href="" class="profile-name">
+                    <img src="{{ friend.friend2.avatar.url }}" height="30px" width="30px"/>&nbsp;
+                    <p>{{friend.friend2.first_name}} {{friend.friend2.last_name}}</p>
+                </a>
+            {% endfor %}
+    </div>
+    <div class="every-posts">
+        {% for one_post in all_post  %}
+                    <div class="all-posts">
+                        <div class="profile-name">
+                            <img src="{{one_post.author.avatar.url}}" height="40px" width="40px"/>
+                            <h4>{{one_post.author}}</h4>
+                        </div>
+                        <p>{{ one_post.content}}</p>
+                        <img src="{{ one_post.image.url }}" alt="" class="image">
+                        <div class="like">
+                            <img src="{% static 'icons/like.png' %}" alt="Groups", height="20px", width="20px">
+                            <p class="gray"> 23 </p>
+                        </div>
+                        <div class="lc">
+                            <a href=""><img src="{% static 'like-2.png' %}" alt="" height="20px", width="20px">&nbsp; Like</a>
+                            <a href="{% url 'login:comment' one_post.pk %}"><img src="{% static 'comment.png' %}" alt="" height="20px", width="20px">&nbsp;&nbsp;Comment</a>
+                        </div>
+                    </div>
+            {% endfor %}
+    </div>
 </section>
 <script>
 function toggle_visibility() {

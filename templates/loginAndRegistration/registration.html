@@ -1,11 +1,31 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Create an account{% endblock title %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'LandR/register.css' %}">
+{% endblock css %}
 {% block content %}
-<h1>Create an account</h1>
+<section class="container">
+    <div class="header">
+        <h1> Social-FB</h1>
+    </div>
+    <div class="register">
+        <form method="post" class="register-form">
+            {{profile_form.as_p}}
+            {{ user_form.as_p}}
+            {% csrf_token %}
+        <p><input type="submit" value="Create my account"></p>
+        </form>
+        <hr>
+        <a href="{% url 'login:login' %}" class="no-margin"><button type="submit">Login</button></a>
+    </div>
+</section>
+{% endblock content %}
+
+{% comment %} <h1>Create an account</h1>
 <form method="post">
     {{profile_form.as_p}}
     {{ user_form.as_p}}
     {% csrf_token %}
 <p><input type="submit" value="Create my account"></p>
-</form>
-{% endblock content %}
+</form> {% endcomment %}

@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
+from django.db import models
 from django.forms import widgets
 from .models import Profile, Post
 
@@ -21,10 +22,17 @@ class LoginForm(forms.Form):
 
 class UserRegistrationForm(forms.ModelForm):
     password = forms.CharField(
-        min_length=8, label="Password", widget=forms.PasswordInput
+        min_length=8,
+        label="",
+        widget=forms.PasswordInput(attrs={"placeholder": "Password"}),
     )
     password2 = forms.CharField(
-        min_length=8, label="Confirm password", widget=forms.PasswordInput
+        min_length=8,
+        label="",
+        widget=forms.PasswordInput(attrs={"placeholder": "Confirm Password"}),
+    )
+    username = forms.CharField(
+        label="", widget=forms.TextInput(attrs={"placeholder": "Username"})
     )
 
     class Meta:
@@ -40,6 +48,15 @@ class UserRegistrationForm(forms.ModelForm):
 
 class UserProfileForm(forms.ModelForm):
     birth_date = forms.DateField(widget=forms.DateInput(attrs={"type": "date"}))
+    first_name = forms.CharField(
+        label="", widget=forms.TextInput(attrs={"placeholder": "first name"})
+    )
+    last_name = forms.CharField(
+        label="", widget=forms.TextInput(attrs={"placeholder": "last name"})
+    )
+    email = forms.EmailField(
+        label="", widget=forms.TextInput(attrs={"placeholder": "Email"})
+    )
 
     class Meta:
         model = Profile
@@ -47,7 +64,23 @@ class UserProfileForm(forms.ModelForm):
 
 
 class UserProfileEditForm(forms.ModelForm):
-    birth_date = forms.DateField(widget=forms.DateInput(attrs={"type": "date"}))
+    first_name = forms.CharField(
+        label="First Name", widget=forms.TextInput(attrs={"placeholder": "first name"})
+    )
+    last_name = forms.CharField(
+        label="Last Name", widget=forms.TextInput(attrs={"placeholder": "last name"})
+    )
+    email = forms.EmailField(
+        label="Email", widget=forms.TextInput(attrs={"placeholder": "first name"})
+    )
+    birth_date = forms.DateField(
+        label="Birth Date", widget=forms.DateInput(attrs={"type": "date"})
+    )
+    private = forms.BooleanField(label="Private Profile", required=False)
+    bio = forms.CharField(
+        label="Bio",
+        widget=forms.Textarea(attrs={"rows": 3, "cols": 35, "placeholder": "Your Bio"}),
+    )
 
     class Meta:
         model = Profile
@@ -65,6 +98,10 @@ class UserProfileEditForm(forms.ModelForm):
 
 
 class UserEditForm(forms.ModelForm):
+    username = forms.CharField(
+        label="Username ", widget=forms.TextInput(attrs={"placeholder": "Username"})
+    )
+
     class Meta:
         model = User
         fields = ("username",)

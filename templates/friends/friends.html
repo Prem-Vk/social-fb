@@ -33,31 +33,41 @@
     </div>
 </section>
 <section class="new-friends">
-    <h3>Request Pending</h3>
+    <div class="pending">
+        <h3>Request Pending</h3>
+    </div>
+    <div class="new-people">
     {% for friend in new_friends %}
+    {% if friend.sender_or_receiver == "R" %}
     <div class="chat">
-        {% if friend.sender_or_receiver == "R" %}
+            <img src="{{ friend.friend2.avatar.url }}" alt="" height="100px" width="100px" width="100px" style="border-radius: 100px;">
             <p>{{ friend.friend2.first_name }} {{friend.friend2.last_name}}</p>
             <form action="" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="accept" value="{{ friend.friend2.user.username }}">
-                <button type="submit">Accept Request</button>
+                <button type="submit">Confirm</button>
             </form>
+        </div>
         {% endif %}
-    </div>
     {% endfor %}
+    </div>
 </section>
 <section class="friends">
-    <h3>Friends</h3>
+    <div class="accepted">
+        <h3>Friends</h3>
+    </div>
+    <div class="old-friends">
     {% for friend in friends %}
         <div class="chat">
-        <p>{{ friend.friend2.first_name }} {{friend.friend2.last_name}}</p>
-        <form action="" method="post">
-            {% csrf_token %}
-            <input type="hidden" name="accept" value="{{ friend.friend2.user.username }}">
-            <button type="submit">Chat</button>
-        </form>
+            <img src="{{ friend.friend2.avatar.url }}" alt="" height="100px" width="100px" style="border-radius: 100px;">
+            <p>{{ friend.friend2.first_name }} {{friend.friend2.last_name}}</p>
+            <form action="" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="accept" value="{{ friend.friend2.user.username }}">
+                <button type="submit">Chat</button>
+            </form>
         </div>
     {% endfor %}
+    </div>
 </section>
 {% endblock content%}

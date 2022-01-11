@@ -16,6 +16,7 @@
 }
 body{
     background-color:ghostwhite;
+    font-family: Arial, Helvetica, sans-serif;
 }
 .social img{
  margin: 0 2vw;
@@ -64,38 +65,30 @@ body{
     border: 2px solid black;
     border-radius: 20px;
 }
-.friends-post img{
-    width:20vw;
+.friends{
+    display: grid;
+    justify-content: center;
 }
-.friends, .new-friends{
+.pending, .accepted, .new{
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
+
 }
-.new-people, .old-friends{
+.friend-form{
     display: flex;
-    flex-wrap: wrap;
     background-color: white;
-    border-radius: 20px;
     box-shadow: 0 0 10px 2px lightgray;
-    margin: 1vh 1vw;
-    padding: 1vh 0.5vw;
+    margin: 1vh 0;
+    padding: 1vh  1vw;
 }
-.pending, .accepted{
-    width: 10vw;
-    background-color: white;
-    border-radius: 20px;
-    box-shadow: 0 0 10px 2px lightgray;
-    margin: 1vh 1vw;
-    padding: 1vh 0.5vw;
+.friend-form h3{
+    margin: 0 5vw 0 1vw;
 }
-.chat{
-    margin: 0.4vh 2vw;
+.friend-form button{
+    border-radius: 100px;
+    
 }
-.chat button{
-    width: 90%;
-    height: 3vh;
-    border: none;
-    background-color: dodgerblue;
-    color: white;
-    border-radius: 15px;
+
+.friend-form button img{
+    border-radius: 100px;
 }

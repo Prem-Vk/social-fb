@@ -24,23 +24,39 @@
     </div>
     <div class='user'>
         <div class='profile'>
-            <img src="{{ request.user.profile.avatar.url }}" alt="", height="40px", width="40px">
+            <img src="{{ request.user.profile.avatar.url }}" alt="", height="40px", width="40px" class="profile-image">&nbsp;&nbsp;
             <a href="{% url 'login:profile' user=user.username %}" ><h3>{{ user.username }}</h3></a>
         </div>
-        <a href="{% url 'login:logout' %}">Log Out</a>
+        &nbsp;&nbsp;   
+        <a href="{% url 'login:logout' %}" class="logout">Log Out</a>
     </div>
 </section>
 <section class="post">
-    <div class="posts">
+    <div class="posts-content">
+        <img src="{{ posts.author.avatar.url }}" alt="" width="70px" height="70px" style="border-radius: 100px;">
+        <h3>{{ posts.author }}</h3>
         <p>{{ posts.content }}</p>
-        <img src="{{ posts.image.url }}" alt="">
-        <p>{{ posts.author }}</p>
     </div>
+    <div class="post-image">
+        <img src="{{ posts.image.url }}" alt="" width="400px">
+    </div>
+</section>
+<section class="comments-section">
+  {% for comment in comments  %}
+  <div class="com-header">
+  <img src="{{ comment.user.avatar.url }}" alt="" height="30px" width="30px" style="border-radius: 100px;">
+    <div class="comment">
+        <h4>{{ comment.user }}</h4>
+        <p>{{ comment.body }}</p>    
+    </div>
+  </div>
+  {% endfor %}
 </section>
 <section class="form">
     <form action="" method="post" class="comment-form">
-        <input type="text" name="" id="">
-        <input type="hidden" name="post-id" value = "{{ pk }}" >
+            {% csrf_token %}
+            <input type="text" name="comment-body" id="" placeholder="Any Comments">
+            <input type="hidden" name="post-id" value = "{{ pk }}" >
         <button type="submit">Post</button>
     </form>
 </section>

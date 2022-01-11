@@ -9,13 +9,14 @@ from .forms import (
 )
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
-from .models import Profile, Post, relation
+from .models import Comment, Profile, Post, relation
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.db.models import Q
 from django.db import transaction
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 
 
 def UserLogin(request):
@@ -23,17 +24,8 @@ def UserLogin(request):
     if request.user.is_superuser:
         logout(request)
         return render(request, "loginAndRegistration/logout.html")
-    elif request.user.is_authenticated:
-        profile = Profile.objects.get(user=request.user)
-        print("suer")
-        return render(
-            request,
-            "home/home.html",
-            {"user": request.user, "profile": profile},
-        )
     elif request.method == "POST":
         form = LoginForm(request.POST)
-        print("suer2")
         if form.is_valid():
             cd = form.cleaned_data
             user = authenticate(
@@ -87,7 +79,7 @@ def UserRegistration(request):
 
 def logout_request(request):
     logout(request)
-    return render(request, "loginAndRegistration/logout.html")
+    return redirect(reverse("login:login"))
 
 
 @login_required
@@ -97,7 +89,6 @@ def home_page(request, username):
         post_form = PostForm(request.POST, request.FILES, prefix="post")
         print("done")
         if post_form.is_valid():
-            print("valid")
             post = post_form.save(commit=False)
             post.author = profile
             post.save()
@@ -105,13 +96,21 @@ def home_page(request, username):
             all_friends = relation.objects.filter(
                 friend1=request.user, request_status="A"
             )
-            print(all_friends)
             user_post = Post.objects.filter(author=request.user.profile)
             all_posts = Post.objects.filter(
                 author__in=[people.friend2 for people in all_friends]
             ).union(user_post)
-            if all_posts:
-                all_posts.order_by("-updated")
+            if len(all_posts) == 0:
+                all_posts = None
+            else:
+                all_posts = (
+                    Post.objects.filter(
+                        author__in=[people.friend2 for people in all_friends]
+                    )
+                    .union(user_post)
+                    .order_by("-updated")
+                )
+            print(all_posts)
             return render(
                 request,
                 "home/home.html",
@@ -127,11 +126,20 @@ def home_page(request, username):
         post_form = PostForm(prefix="post")
         all_friends = relation.objects.filter(friend1=request.user, request_status="A")
         user_post = Post.objects.filter(author=request.user.profile)
-
         all_posts = Post.objects.filter(
             author__in=[people.friend2 for people in all_friends]
         ).union(user_post)
-        if all_posts:
+        if len(all_posts) == 0:
+            all_posts = None
+        else:
+            all_posts = (
+                Post.objects.filter(
+                    author__in=[people.friend2 for people in all_friends]
+                )
+                .union(user_post)
+                .order_by("-updated")
+            )
+        if all_posts is not None:
             all_posts.order_by("-updated")
     return render(
         request,
@@ -150,6 +158,7 @@ def home_page(request, username):
 def profile_detail(request, user):
     profile = Profile.objects.get(user=request.user)
     all_post = Post.objects.filter(author=profile)
+    all_friends = relation.objects.filter(friend1=request.user, request_status="A")
     if request.method == "POST":
         user_form = UserEditForm(instance=request.user, data=request.POST)
         profile_form = UserProfileEditForm(
@@ -167,6 +176,8 @@ def profile_detail(request, user):
                     "profile": profile,
                     "user_form": user_form,
                     "profile_form": profile_form,
+                    "all_post": all_post,
+                    "all_friends": all_friends,
                 },
             )
     else:
@@ -180,11 +191,13 @@ def profile_detail(request, user):
             "user_form": user_form,
             "profile_form": profile_form,
             "all_post": all_post,
+            "all_friends": all_friends,
         },
     )
 
 
 @login_required
+@transaction.atomic
 def SearchFriend(request):
     pending = []
     accepted = []
@@ -276,6 +289,7 @@ def login_redirect(request):
 
 
 @login_required
+@transaction.atomic
 def friends_page(request):
     if request.method == "POST":
         status_pending = request.POST.get("accept")
@@ -306,7 +320,38 @@ def friends_page(request):
 
 @login_required
 def post_comment(request, pk):
-    if request.method == "POST":
-        pass
-    posts = Post.objects.get(id=pk)
-    return render(request, "posts/post.html", {"posts": posts})
+    relations = []
+    author = Post.objects.get(id=pk)
+    try:
+        if request.user == author.author.user:
+            if request.method == "POST":
+                body = request.POST.get("comment-body")
+                post_id = int(request.POST.get("post-id"))
+                print(post_id)
+                post = Post.objects.get(id=post_id)
+                Comment.objects.create(user=request.user.profile, post=post, body=body)
+            posts = Post.objects.get(id=pk)
+            comments = Comment.objects.filter(post=posts)
+            return render(
+                request, "posts/post.html", {"posts": posts, "comments": comments}
+            )
+        elif relation.objects.get(
+            friend1=request.user, friend2=author.author, request_status="A"
+        ):
+            if request.method == "POST":
+                body = request.POST.get("comment-body")
+                post_id = request.POST.get("post-id")
+                post = Post.objects.get(id=post_id)
+                Comment.objects.create(user=request.user.profile, post=post, body=body)
+            posts = Post.objects.get(id=pk)
+            comments = Comment.objects.filter(post=posts)
+            print(comments)
+            return render(
+                request,
+                "posts/post.html",
+                {"posts": posts, "comments": comments, "pk": pk},
+            )
+        else:
+            return HttpResponse("Invalid Id")
+    except ObjectDoesNotExist:
+        return HttpResponse("Invalid ID")

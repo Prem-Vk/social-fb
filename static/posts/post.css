@@ -20,8 +20,36 @@ body{
 .social img{
  margin: 0 2vw;
 }
-.profile, .user{
+.user{
     display: flex;
+}
+.profile{
+    display: flex;
+    padding: 1vh 1vw 1vh 1vw;
+    border-radius: 40px;
+}
+.profile-image{
+    border-radius: 100px;
+}
+.profile a{
+    text-decoration: none;
+}
+.logout{
+    text-decoration: none;
+    color: black;
+    padding: 1.7vh 1.2vw 1vh 1.2vw;
+    border-radius: 20px;
+}
+.profile h3{
+    font-family: Arial, Helvetica, sans-serif;
+    color: black;
+}
+.profile:hover{
+    background-color: rgb(200, 200, 206);
+}
+.logout:hover{
+    background-color: dodgerblue;
+    color: white;
 }
 .header h1{
     color: dodgerblue;
@@ -42,10 +70,33 @@ body{
 }
 .post{
     margin-top: 2vh;
+    display: flex;
+    justify-content: center;
 }
-.posts{
+.posts-content{
+    margin: 10vh 2vw 1vh 2vw ;
     background-color: white;
-    box-shadow: 0 0 5px 2px black;
+    padding: 1vh 1vw 0 1vw;
+    border-radius: 30px;
+    box-shadow: 0 0 10px 2px lightgray;
+    width: 12vw;
+}
+.posts-content h3{
+    margin-bottom: 1vh;
+}
+.posts-content img{
+    margin-top: 3vh;
+}
+.post-image{
+    margin: 0vh 2vw 1vh 2vw;
+    padding: 1.5vh 1.5vw;
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 0 0 10px 2px lightgray;
+}
+.post-image img{
+    border-radius: 20px;
+    max-height: 300px;
 }
 .form{
     position: fixed;
@@ -53,10 +104,11 @@ body{
     margin: 1vh 1vw;
 }
 .form input[type=text]{
-    width: 80vw;
+    width: 40vw;
     border-radius: 20px;
     height: 3vh;
     border: 2px solid darkgray;
+    padding: 0 1vw;
 }
 .form button{
     width:12vw;
@@ -65,4 +117,23 @@ body{
     height: 3.5vh;
     border-radius: 20px;
     border: none;
+}
+
+.comments-section{
+    margin: 2vh 1vw 1vh 1vw;
+    height: 42vh;
+    width: 70vw;
+    background-color: white;
+    box-shadow: 0 0 10px 2px lightgray;
+    border-radius: 30px;
+    overflow-y: auto;
+    padding: 1vh 1vw;
+}
+.com-header{
+    display: flex;
+    margin: 1.2vh 0.5vw;
+}
+.comment{
+    display:flex ;
+    flex-direction: column;
 }

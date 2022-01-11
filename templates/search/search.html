@@ -4,7 +4,7 @@
 Search-Facebook
 {% endblock title %}
 {% block css %}
-<link rel="stylesheet" href="{% static 'home/home.css' %}">
+<link rel="stylesheet" href="{% static 'search/search.css' %}">
 {% endblock css %}
 {% block content %}
 <section class="container">
@@ -18,54 +18,67 @@ Search-Facebook
         </form>
     </div>
     <div class="social">
-        <img src="{% static 'icons/home-page.png' %}" alt="Home", height="40px", width="40px">
-        <img src="{% static 'icons/friends.png' %}" alt="Friends", height="40px", width="60px">
-        <img src="{% static 'icons/videos.png' %}" alt="Watch", height="40px", width="40px">
-        <img src="{% static 'icons/market.png' %}" alt="Marketplace", height="40px", width="60px">
-        <img src="{% static 'icons/people.png' %}" alt="Groups", height="40px", width="40px">
+        <img src="{% static 'icons/home-page.png' %}" alt="Home", height="50px", width="50px">
+        <img src="{% static 'icons/friends.png' %}" alt="Friends", height="50px", width="60px">
+        <img src="{% static 'icons/videos.png' %}" alt="Watch", height="50px", width="50px">
+        <img src="{% static 'icons/market.png' %}" alt="Marketplace", height="50px", width="60px">
+        <img src="{% static 'icons/people.png' %}" alt="Groups", height="50px", width="50px">
     </div>
     <div class='user'>
         <div class='profile'>
-            <img src="{% static 'icons/home-page.png' %}" alt="", height="40px", width="40px">
+            <img src="{{ request.user.profile.avatar.url }}" alt="", height="50px", width="50px" class="profile-image">&nbsp;&nbsp;
             <a href="{% url 'login:profile' user=user.username %}" ><h3>{{ user.username }}</h3></a>
         </div>
-        <a href="{% url 'login:logout' %}">Log Out</a>
+        &nbsp;&nbsp;   
+        <a href="{% url 'login:logout' %}" class="logout">Log Out</a>
     </div>
 </section>
-<section class="friends" style="display: flex;flex-direction: column;align-items: center;">
+<section class="friends">
     <h2> Search For: {{ search }}</h2>
-    <p>Search results</p>
-    {% for rp in pending %}
-    <form action="" method="post" class ="friend-form">
-        {% csrf_token %}
-        {% if rp.sender_or_receiver == "S" and rp.request_status == "P" %}
-            <p>Request already send to {{rp.friend2.user}} Waiting for acceptance</p>
-        {% else %}
-        <input type="hidden" name="pending" value="{{ rp.friend2.user }}">
-        <input type="hidden" name="search" value="{{ search }}">
-        <button type="submit">Accept request</button>
-        {% endif %}
+    <p>Search results : {{ friends | length }} </p>
+    <div class="pending">
+        {% for rp in pending %}
+            <form action="" method="post" class ="friend-form">
+                {% csrf_token %}
+                {% if rp.sender_or_receiver == "S" and rp.request_status == "P" %}
+                    <img src="{{ rp.friend2.avatar.url}}" alt="" height="50px" width="50px" style="border-radius: 100px;">
+                    <h3>{{rp.friend2.first_name}} {{ rp.friend2.last_name }}</h3>
+                    <button disabled="disabled"><img src="{% static 'icons/pending.png' %}" height="50px" width="50px" alt="" title="Pending from {{rp.friend2.first_name}} {{ rp.friend2.last_name }}"></button>
+                {% else %}
+                    <img src="{{ rp.friend2.avatar.url}}" alt="" height="50px" width="50px" style="border-radius: 100px;">
+                    <h3>{{rp.friend2.first_name}} {{ rp.friend2.last_name }}</h3>
+                    <input type="hidden" name="pending" value="{{ rp.friend2.user }}">
+                    <input type="hidden" name="search" value="{{ search }}">
+                    <button type="submit"><img src="{% static 'icons/accept-friend.png' %}" height="50px" width="50px" alt="" title="Accept request {{rp.friend2.first_name}} {{ rp.friend2.last_name }}"></button>
+                {% endif %}
             </form>
         {% endfor %}
+    </div>
+    <div class="accepted">
         {% for ra in accepted  %}
-            <p> Accepted {{ra}}</p>
-            <form action="" method="post" class="friend-form">
+        <form action="" method="post" class="friend-form">
                 {% csrf_token %}
+                <img src="{{ ra.profile.avatar.url}}" alt="" height="50px" width="50px" style="border-radius: 100px;">
+                <h3>{{ra.profile.first_name}} {{ ra.profile.last_name }}</h3>
                 <input type="hidden" name="accepted" value="{{ ra }}">
                 <input type="hidden" name="search" value="{{ search }}">
-                <button type="submit">Chat</button>
+                <button type="submit"><img src="{% static 'icons/chat.png' %}" height="40px" width="40px" alt="" title="Chat with {{ra.profile.first_name}} {{ ra.profile.last_name }}"></button>
             </form>
         {% endfor %}
+    </div>
+    <div class="new">
         {% for friend in friends %}
             {% if friend.user not in previous_relation %}
-                <p>Add Friend {{ friend.user }}</p>
-                <form action="" method="post" class="friend-form">
-                    {% csrf_token %}
+            <form action="" method="post" class="friend-form">
+                {% csrf_token %}
+                <img src="{{ friend.avatar.url}}" alt="" height="50px" width="50px" style="border-radius: 100px;">
+                    <h3>{{friend.first_name}} {{ friend.last_name }}</h3>
                     <input type="hidden" name="new" value = "{{ friend.user }}"">
                     <input type="hidden" name="search" value="{{ search }}">
-                    <button type="submit">Send Request</button>
+                    <button type="submit"><img src="{% static 'icons/add-friend.png' %}" height="50px" width="50px" alt="" title="Add friend {{friend.first_name}} {{ friend.last_name }}"></button>
                 </form>
             {% endif %}
         {% endfor %}
+    </div>
 </section>
 {% endblock content %}
