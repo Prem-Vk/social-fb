@@ -54,7 +54,6 @@ def UserRegistration(request):
         user_form = UserRegistrationForm(request.POST, prefix="user")
         profile_form = UserProfileForm(request.POST, prefix="profile")
         if user_form.is_valid() and profile_form.is_valid():
-            print("done")
             new_user = user_form.save(commit=False)
             new_user.set_password(user_form.cleaned_data["password"])
             new_user.save()
@@ -87,7 +86,6 @@ def home_page(request, username):
     profile = Profile.objects.get(user=request.user)
     if request.method == "POST":
         post_form = PostForm(request.POST, request.FILES, prefix="post")
-        print("done")
         if post_form.is_valid():
             post = post_form.save(commit=False)
             post.author = profile
@@ -110,7 +108,6 @@ def home_page(request, username):
                     .union(user_post)
                     .order_by("-updated")
                 )
-            print(all_posts)
             return render(
                 request,
                 "home/home.html",
@@ -242,7 +239,6 @@ def SearchFriend(request):
             ).filter(~Q(user=request.user))
             relations = relation.objects.filter(friend1=request.user)
             previous_relations = [req.friend2.user for req in relations]
-            print(previous_relations)
             for friend in friends:
                 for rel in relations:
                     if friend.user == rel.friend2.user:
@@ -284,7 +280,6 @@ def SearchFriend(request):
 
 
 def login_redirect(request):
-    print("hello")
     return redirect(reverse("login:login"))
 
 
@@ -327,7 +322,6 @@ def post_comment(request, pk):
             if request.method == "POST":
                 body = request.POST.get("comment-body")
                 post_id = int(request.POST.get("post-id"))
-                print(post_id)
                 post = Post.objects.get(id=post_id)
                 Comment.objects.create(user=request.user.profile, post=post, body=body)
             posts = Post.objects.get(id=pk)
@@ -345,7 +339,6 @@ def post_comment(request, pk):
                 Comment.objects.create(user=request.user.profile, post=post, body=body)
             posts = Post.objects.get(id=pk)
             comments = Comment.objects.filter(post=posts)
-            print(comments)
             return render(
                 request,
                 "posts/post.html",
