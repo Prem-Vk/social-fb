@@ -131,9 +131,10 @@ body{
 }
 .com-header{
     display: flex;
-    margin: 1.2vh 0.5vw;
+    margin: 1.8vh 0.5vw;
 }
 .comment{
     display:flex ;
     flex-direction: column;
+    padding-left: 0.5vw;
 }

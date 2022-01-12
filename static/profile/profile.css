@@ -208,6 +208,7 @@ body{
     display: flex;
     padding-left: 1vw;
     text-decoration: none;
+    margin: 0.8vh 0;
 }
 .profile-name h4{
     margin-top: 0.8vh;
@@ -220,6 +221,7 @@ body{
 .profile-name p{
     text-decoration: none;
     color: black;
+    padding-left: 0.4vw;
 }
 .lc{
     display: grid;
@@ -256,4 +258,9 @@ body{
 .all-posts .image{
     width: 30vw;
     max-height: 600px;
+}
+.post-date{
+    font-size: 13px;
+    color:rgb(104, 101, 101);
+    padding-bottom: 1vh; 
 }

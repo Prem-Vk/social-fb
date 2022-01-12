@@ -82,20 +82,26 @@ body{
 }
 .pending, .accepted{
     width: 10vw;
-    background-color: white;
     border-radius: 20px;
-    box-shadow: 0 0 10px 2px lightgray;
     margin: 1vh 1vw;
     padding: 1vh 0.5vw;
 }
 .chat{
     margin: 0.4vh 2vw;
 }
-.chat button{
+.submit{
     width: 90%;
     height: 3vh;
     border: none;
     background-color: dodgerblue;
     color: white;
     border-radius: 15px;
+}
+.reject{
+    width: 90%;
+    height: 3vh;
+    border: none;
+    background-color: white;
+    color: dodgerblue;
+    border-radius: 15px;   
 }

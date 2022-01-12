@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.humanize",
     "loginAndRegistration.apps.LoginandregistrationConfig",
     "cloudinary_storage",
     "cloudinary",

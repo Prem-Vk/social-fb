@@ -12,4 +12,5 @@ urlpatterns = [
     path("search", views.SearchFriend, name="search"),
     path("friends", views.friends_page, name="friends"),
     path("comment/<int:pk>", views.post_comment, name="comment"),
+    path("like", views.like_counter, name="likes"),
 ]

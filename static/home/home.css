@@ -57,11 +57,10 @@ body{
     padding: 1vh 4vw 1vh 1vw;
 }
 .all-f{
-    padding: 1.5vh 3vw 1.5vh 2vw;
     text-decoration: none;
     color: black;
-    border-radius: 20px;
     font-weight: bold;
+    padding-top: 0.9vh;
 }
 .all-f:hover{
     background-color: rgb(200, 200, 206);
@@ -193,4 +192,43 @@ body{
 }
 .contacts a:hover{
     background-color: rgb(200, 200, 206);
+}
+.topper{
+    position: sticky;
+    bottom: 2vh;
+    right: 2vw;
+}
+.topper a{
+    padding-left: 2vh;
+}
+.topper a img{
+    background-color: dodgerblue;
+    border-radius: 100px;
+}
+.post-like{
+    display: flex;
+    justify-content: center;
+    margin-top: 0.5vh;
+}
+.post-like p{
+    margin: 0;
+    color: darkgray;
+    padding: 0 0 0 0.4vh;
+}
+.post-like p:hover{
+    color: blue;
+}
+.post-like button{
+    background: transparent;
+    border: none;
+    width: 3vw;
+    color: darkgray
+}
+.post-like button:hover{
+    color: blue;
+}
+.post-date{
+    font-size: 13px;
+    color:rgb(104, 101, 101);
+    padding-bottom: 1vh; 
 }

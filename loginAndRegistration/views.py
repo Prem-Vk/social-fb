@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .forms import (
     LoginForm,
     UserRegistrationForm,
@@ -61,11 +61,7 @@ def UserRegistration(request):
             new_profile.user = new_user
             new_profile.slug = new_user.username.replace(" ", "-")
             new_profile.save()
-            return render(
-                request,
-                "loginAndRegistration/registration_done.html",
-                {"new_user": new_user},
-            )
+            return redirect(reverse("login:login"))
     else:
         user_form = UserRegistrationForm(prefix="user")
         profile_form = UserProfileForm(prefix="profile")
@@ -108,17 +104,6 @@ def home_page(request, username):
                     .union(user_post)
                     .order_by("-updated")
                 )
-            return render(
-                request,
-                "home/home.html",
-                {
-                    "user": request.user,
-                    "profile": profile,
-                    "post_form": post_form,
-                    "all_posts": all_posts,
-                    "all_friends": all_friends,
-                },
-            )
     else:
         post_form = PostForm(prefix="post")
         all_friends = relation.objects.filter(friend1=request.user, request_status="A")
@@ -203,6 +188,7 @@ def SearchFriend(request):
         status_pending = request.POST.get("pending")
         status_accepted = request.POST.get("accepted")
         status_new = request.POST.get("new")
+        cancel = request.POST.get("cancel")
         find = search.split(" ")
         if status_pending is not None:
             pend_user = User.objects.get(username=status_pending)
@@ -233,6 +219,16 @@ def SearchFriend(request):
                 sender_or_receiver="R",
                 request_status="P",
             )
+        if cancel is not None:
+            cancel_request = User.objects.get(username=cancel)
+            sender = relation.objects.get(
+                friend1=cancel_request, friend2=request.user.profile, request_status="P"
+            )
+            receiver = relation.objects.get(
+                friend1=request.user, friend2=cancel_request.profile, request_status="P"
+            )
+            sender.delete()
+            receiver.delete()
         if len(find) == 1:
             friends = Profile.objects.filter(
                 Q(first_name=find[0]) | Q(last_name=find[0])
@@ -288,6 +284,8 @@ def login_redirect(request):
 def friends_page(request):
     if request.method == "POST":
         status_pending = request.POST.get("accept")
+        reject = request.POST.get("reject")
+        unfriend = request.POST.get("unfriend")
         if status_pending is not None:
             pend_user = User.objects.get(username=status_pending)
             accept1 = relation.objects.get(
@@ -301,6 +299,26 @@ def friends_page(request):
             accept2.request_status = "A"
             accept1.save()
             accept2.save()
+        if reject is not None:
+            pend_user = User.objects.get(username=reject)
+            reject1 = relation.objects.get(
+                friend1=request.user, friend2=pend_user.profile, request_status="P"
+            )
+            reject2 = relation.objects.get(
+                friend1=pend_user, friend2=request.user.profile, request_status="P"
+            )
+            reject1.delete()
+            reject2.delete()
+        if unfriend is not None:
+            pend_user = User.objects.get(username=unfriend)
+            friend1 = relation.objects.get(
+                friend1=request.user, friend2=pend_user.profile, request_status="A"
+            )
+            friend2 = relation.objects.get(
+                friend1=pend_user, friend2=request.user.profile, request_status="A"
+            )
+            friend1.delete()
+            friend2.delete()
         friends = relation.objects.filter(friend1=request.user, request_status="A")
         new_friends = relation.objects.filter(friend1=request.user, request_status="P")
     else:
@@ -348,3 +366,17 @@ def post_comment(request, pk):
             return HttpResponse("Invalid Id")
     except ObjectDoesNotExist:
         return HttpResponse("Invalid ID")
+
+
+@login_required
+def like_counter(request):
+    if request.method == "POST":
+        unlike = request.POST.get("unlike")
+        like = request.POST.get("like")
+        if like is not None:
+            post = get_object_or_404(Post, id=like)
+            post.liked.add(request.user.profile)
+        else:
+            post = get_object_or_404(Post, id=unlike)
+            post.liked.remove(request.user.profile)
+    return redirect(reverse("login:home", kwargs={"username": request.user.username}))

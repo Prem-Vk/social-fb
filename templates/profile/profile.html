@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load humanize %}
 {% block title %}
 {{ user.username }}-Profile Page
 {% endblock title %}
@@ -92,6 +93,7 @@
                         </div>
                         <p>{{ one_post.content}}</p>
                         <img src="{{ one_post.image.url }}" alt="" class="image">
+                        <p class="post-date"> Posted {{ one_post.created|naturaltime|capfirst  }}</p>
                         <div class="like">
                             <img src="{% static 'icons/like.png' %}" alt="Groups", height="20px", width="20px">
                             <p class="gray"> 23 </p>

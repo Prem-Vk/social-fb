@@ -1,11 +1,14 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load like_or_not %}
+{% load humanize %}
 {% block title %}Facebook - Home page{% endblock title %}
 {% block css %}
 <link rel="stylesheet" href="{% static 'home/home.css' %}">
 {% endblock css %}
 
 {% block content %}
+<a name="top"></a>
 <section class="container">
     <div class="header">
         <a href="{% url 'login:home' request.user.username %}" style="text-decoration: none;"><h1> Social-FB</h1></a>
@@ -38,7 +41,10 @@
                 <img src="{{ request.user.profile.avatar.url }}" alt="", height="40px", width="40px" class="profile-image">&nbsp;&nbsp;
                 <a href="{% url 'login:profile' user=user.username %}" ><h3>{{ user.username }}</h3></a>
             </div>
+            <div class="profile extra">
+                <img src={% static 'icons/friends-2.png' %} alt="", height="40px", width="40px" class="profile-image">&nbsp;&nbsp;
                 <a href="{% url 'login:friends' %}" class="all-f">Friends</a>
+            </div>
     </div>
     <div class="posts">
         <div class="post-create">
@@ -57,12 +63,25 @@
                         </div>
                         <p>{{ one_post.content}}</p>
                         <img src="{{ one_post.image.url }}" alt="" class="image">
+                        <p class="post-date"> Posted {{ one_post.created|naturaltime|capfirst  }}</p>
                         <div class="like">
                             <img src="{% static 'icons/like.png' %}" alt="Groups", height="20px", width="20px">
-                            <p class="gray"> 23 </p>
+                            <p class="gray"> {{ one_post.num_likes }} </p>
                         </div>
                         <div class="lc">
-                            <a href=""><img src="{% static 'like-2.png' %}" alt="" height="20px", width="20px">&nbsp; Like</a>
+                            <div class="post-like">
+                                <img src="{% static 'like-2.png' %}" alt="" height="20px", width="20px">
+                                <form action="{% url 'login:likes' %}" method="post">
+                                    {% csrf_token %}
+                                    {% if one_post|liked:user.profile.id %}
+                                        <input type="hidden" name="unlike" value={{ one_post.pk }}>
+                                        <button type="submit">Unlike</button>
+                                    {% else %}
+                                        <input type="hidden" name="like" value={{ one_post.pk }}>
+                                        <button type="submit">like</button>
+                                    {% endif %}
+                                </form>
+                            </div>
                             <a href="{% url 'login:comment' one_post.pk %}"><img src="{% static 'comment.png' %}" alt="" height="20px", width="20px">&nbsp;&nbsp;Comment</a>
                         </div>
                     </div>
@@ -78,5 +97,8 @@
             </a>
         {% endfor %}
     </div>
+</section>
+<section class="topper">
+    <a href="#top"><img src={% static 'icons/up.png' %} height="40px" width="40px" alt="" title="Back to Top"></a>
 </section>
 {% endblock content %}
