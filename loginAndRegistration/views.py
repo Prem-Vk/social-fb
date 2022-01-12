@@ -86,43 +86,22 @@ def home_page(request, username):
             post = post_form.save(commit=False)
             post.author = profile
             post.save()
-            post_form = PostForm(prefix="post")
-            all_friends = relation.objects.filter(
-                friend1=request.user, request_status="A"
-            )
-            user_post = Post.objects.filter(author=request.user.profile)
-            all_posts = Post.objects.filter(
-                author__in=[people.friend2 for people in all_friends]
-            ).union(user_post)
-            if len(all_posts) == 0:
-                all_posts = None
-            else:
-                all_posts = (
-                    Post.objects.filter(
-                        author__in=[people.friend2 for people in all_friends]
-                    )
-                    .union(user_post)
-                    .order_by("-updated")
-                )
+    post_form = PostForm(prefix="post")
+    all_friends = relation.objects.filter(friend1=request.user, request_status="A")
+    user_post = Post.objects.filter(author=request.user.profile)
+    all_posts = Post.objects.filter(
+        author__in=[people.friend2 for people in all_friends]
+    ).union(user_post)
+    if len(all_posts) == 0:
+        all_posts = None
+    elif len(all_friends) == 0:
+        pass
     else:
-        post_form = PostForm(prefix="post")
-        all_friends = relation.objects.filter(friend1=request.user, request_status="A")
-        user_post = Post.objects.filter(author=request.user.profile)
-        all_posts = Post.objects.filter(
-            author__in=[people.friend2 for people in all_friends]
-        ).union(user_post)
-        if len(all_posts) == 0:
-            all_posts = None
-        else:
-            all_posts = (
-                Post.objects.filter(
-                    author__in=[people.friend2 for people in all_friends]
-                )
-                .union(user_post)
-                .order_by("-updated")
-            )
-        if all_posts is not None:
-            all_posts.order_by("-updated")
+        all_posts = (
+            Post.objects.filter(author__in=[people.friend2 for people in all_friends])
+            .union(user_post)
+            .order_by("-updated")
+        )
     return render(
         request,
         "home/home.html",
@@ -151,17 +130,6 @@ def profile_detail(request, user):
             user_form.save()
             profile_form.save()
             profile = Profile.objects.get(user=request.user)
-            return render(
-                request,
-                "profile/profile.html",
-                {
-                    "profile": profile,
-                    "user_form": user_form,
-                    "profile_form": profile_form,
-                    "all_post": all_post,
-                    "all_friends": all_friends,
-                },
-            )
     else:
         user_form = UserEditForm(instance=request.user)
         profile_form = UserProfileEditForm(instance=request.user.profile)
@@ -231,7 +199,7 @@ def SearchFriend(request):
             receiver.delete()
         if len(find) == 1:
             friends = Profile.objects.filter(
-                Q(first_name=find[0]) | Q(last_name=find[0])
+                Q(first_name__contains=find[0]) | Q(last_name__contains=find[0])
             ).filter(~Q(user=request.user))
             relations = relation.objects.filter(friend1=request.user)
             previous_relations = [req.friend2.user for req in relations]
@@ -339,13 +307,15 @@ def post_comment(request, pk):
         if request.user == author.author.user:
             if request.method == "POST":
                 body = request.POST.get("comment-body")
-                post_id = int(request.POST.get("post-id"))
+                post_id = request.POST.get("post-id")
                 post = Post.objects.get(id=post_id)
                 Comment.objects.create(user=request.user.profile, post=post, body=body)
             posts = Post.objects.get(id=pk)
             comments = Comment.objects.filter(post=posts)
             return render(
-                request, "posts/post.html", {"posts": posts, "comments": comments}
+                request,
+                "posts/post.html",
+                {"posts": posts, "comments": comments, "pk": pk},
             )
         elif relation.objects.get(
             friend1=request.user, friend2=author.author, request_status="A"
@@ -373,10 +343,15 @@ def like_counter(request):
     if request.method == "POST":
         unlike = request.POST.get("unlike")
         like = request.POST.get("like")
+        page = request.POST.get("page")
         if like is not None:
             post = get_object_or_404(Post, id=like)
             post.liked.add(request.user.profile)
         else:
             post = get_object_or_404(Post, id=unlike)
             post.liked.remove(request.user.profile)
+        if page == "profile":
+            return redirect(
+                reverse("login:profile", kwargs={"user": request.user.username})
+            )
     return redirect(reverse("login:home", kwargs={"username": request.user.username}))

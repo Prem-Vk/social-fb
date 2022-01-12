@@ -264,3 +264,34 @@ body{
     color:rgb(104, 101, 101);
     padding-bottom: 1vh; 
 }
+.post-like{
+    display: flex;
+    justify-content: center;
+    margin-top: 0.5vh;
+}
+.post-like p{
+    margin: 0;
+    color: darkgray;
+    padding: 0 0 0 0.4vh;
+}
+.post-like p:hover{
+    color: blue;
+}
+.post-like button{
+    background: transparent;
+    border: none;
+    width: 3vw;
+    color: darkgray
+}
+.post-like button:hover{
+    color: blue;
+}
+.post-date{
+    font-size: 13px;
+    color:rgb(104, 101, 101);
+    padding-bottom: 1vh; 
+}
+.gray{
+    margin: 0;
+    padding-left: 0.4vh;
+}

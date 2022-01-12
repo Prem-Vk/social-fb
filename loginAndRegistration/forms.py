@@ -55,7 +55,8 @@ class UserProfileForm(forms.ModelForm):
         label="", widget=forms.TextInput(attrs={"placeholder": "last name"})
     )
     email = forms.EmailField(
-        label="", widget=forms.TextInput(attrs={"placeholder": "Email"})
+        label="",
+        widget=forms.TextInput(attrs={"placeholder": "Email", "class": "test"}),
     )
 
     class Meta:

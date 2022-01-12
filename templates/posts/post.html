@@ -56,7 +56,7 @@
     <form action="" method="post" class="comment-form">
             {% csrf_token %}
             <input type="text" name="comment-body" id="" placeholder="Any Comments">
-            <input type="hidden" name="post-id" value = "{{ pk }}" >
+            <input type="hidden" name="post-id" value="{{ pk }}" >
         <button type="submit">Post</button>
     </form>
 </section>

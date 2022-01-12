@@ -82,6 +82,7 @@ body{
     box-shadow: 0 0 10px 2px lightgray;
     margin: 1vh 0;
     padding: 1vh  1vw;
+    border-radius: 40px;
 }
 .friend-form h3{
     margin: 0 5vw 0 1vw;

@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load like_or_not %}
 {% load humanize %}
 {% block title %}
 {{ user.username }}-Profile Page
@@ -96,10 +97,24 @@
                         <p class="post-date"> Posted {{ one_post.created|naturaltime|capfirst  }}</p>
                         <div class="like">
                             <img src="{% static 'icons/like.png' %}" alt="Groups", height="20px", width="20px">
-                            <p class="gray"> 23 </p>
+                            <span class="gray"> {{ one_post.num_likes }}  </span>
                         </div>
                         <div class="lc">
-                            <a href=""><img src="{% static 'like-2.png' %}" alt="" height="20px", width="20px">&nbsp; Like</a>
+                            <div class="post-like">
+                                <img src="{% static 'like-2.png' %}" alt="" height="20px", width="20px">
+                                <form action="{% url 'login:likes' %}" method="post">
+                                    {% csrf_token %}
+                                    {% if one_post|liked:user.profile.id %}
+                                        <input type="hidden" name="unlike" value={{ one_post.pk }}>
+                                        <input type="hidden" name="page" value="profile">
+                                        <button type="submit">Unlike</button>
+                                    {% else %}
+                                        <input type="hidden" name="like" value={{ one_post.pk }}>
+                                        <input type="hidden" name="page" value="profile">
+                                        <button type="submit">like</button>
+                                    {% endif %}
+                                </form>
+                            </div>
                             <a href="{% url 'login:comment' one_post.pk %}"><img src="{% static 'comment.png' %}" alt="" height="20px", width="20px">&nbsp;&nbsp;Comment</a>
                         </div>
                     </div>

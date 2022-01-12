@@ -75,9 +75,11 @@
                                     {% csrf_token %}
                                     {% if one_post|liked:user.profile.id %}
                                         <input type="hidden" name="unlike" value={{ one_post.pk }}>
+                                        <input type="hidden" name="page" value="home">
                                         <button type="submit">Unlike</button>
                                     {% else %}
                                         <input type="hidden" name="like" value={{ one_post.pk }}>
+                                        <input type="hidden" name="page" value="home">
                                         <button type="submit">like</button>
                                     {% endif %}
                                 </form>
