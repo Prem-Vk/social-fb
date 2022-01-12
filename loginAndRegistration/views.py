@@ -199,30 +199,21 @@ def SearchFriend(request):
             receiver.delete()
         if len(find) == 1:
             friends = Profile.objects.filter(
-                Q(first_name__contains=find[0]) | Q(last_name__contains=find[0])
+                Q(first_name__icontains=find[0]) | Q(last_name__icontains=find[0])
             ).filter(~Q(user=request.user))
-            relations = relation.objects.filter(friend1=request.user)
-            previous_relations = [req.friend2.user for req in relations]
-            for friend in friends:
-                for rel in relations:
-                    if friend.user == rel.friend2.user:
-                        if rel.request_status == "P":
-                            pending.append(rel)
-                        else:
-                            accepted.append(friend.user)
         else:
             friends = Profile.objects.filter(
-                Q(first_name__contains=find[0]) & Q(last_name__contains=find[1])
+                Q(first_name__icontains=find[0]) & Q(last_name__icontains=find[1])
             ).filter(~Q(user=request.user))
-            relations = relation.objects.filter(friend1=request.user)
-            previous_relations = [req.friend2.user for req in relations]
-            for friend in friends:
-                for rel in relations:
-                    if friend.user == rel.friend2.user:
-                        if rel.request_status == "P":
-                            pending.append(rel)
-                        else:
-                            accepted.append(friend.user)
+        relations = relation.objects.filter(friend1=request.user)
+        previous_relations = [req.friend2.user for req in relations]
+        for friend in friends:
+            for rel in relations:
+                if friend.user == rel.friend2.user:
+                    if rel.request_status == "P":
+                        pending.append(rel)
+                    else:
+                        accepted.append(friend.user)
         return render(
             request,
             "search/search.html",
