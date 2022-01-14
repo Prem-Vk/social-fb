@@ -155,6 +155,10 @@ body{
     display: flex;
     padding-left: 1vw;
 }
+.profile-name a{
+    padding: 0;
+    margin: 0;
+}
 .profile-name h4{
     margin-top: 0.8vh;
     padding-left: 0.9vw;

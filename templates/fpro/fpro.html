@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Facebook - Home page{% endblock title %}
+{% block css %}
+<link rel="stylesheet" href="{% static 'fpro/fpro.css' %}">
+{% endblock css %}
+
+{% block content %}
+<section class="container">
+    <div class="header">
+        <a href="{% url 'login:home' request.user.username %}" style="text-decoration: none;"><h1> Social-FB</h1></a>
+        <form method="post" action="{% url 'login:search' %}">
+            {% csrf_token %}
+            <input type="text" name="search" id="" placeholder="Search FB">
+        <img src="{% static 'icons/search.png' %}" alt="Home", height="20px", width="20px">
+        <button type="submit"></button>
+        </form>
+    </div>
+    <div class="social">
+        <img src="{% static 'icons/home-page.png' %}" alt="Home", height="40px", width="40px">
+        <img src="{% static 'icons/friends.png' %}" alt="Friends", height="40px", width="60px">
+        <img src="{% static 'icons/videos.png' %}" alt="Watch", height="40px", width="40px">
+        <img src="{% static 'icons/market.png' %}" alt="Marketplace", height="40px", width="60px">
+        <img src="{% static 'icons/people.png' %}" alt="Groups", height="40px", width="40px">
+    </div>
+    <div class='user'>
+        <div class='profile'>
+            <img src="{{ request.user.profile.avatar.url }}" alt="", height="40px", width="40px" class="profile-image">&nbsp;&nbsp;
+            <a href="{% url 'login:profile' user=user.username %}" ><h3>{{ user.username }}</h3></a>
+        </div>
+        &nbsp;&nbsp;   
+        <a href="{% url 'login:logout' %}" class="logout">Log Out</a>
+    </div>
+</section>
+<section class="profile-page">
+    <div class="i-bio">
+        <div class="image">
+            <img src="{{ profile.profile.avatar.url }}" alt="" height="200px", width="200px">
+        </div>
+        <div class="data">
+            <p class = "name">{{ profile.profile.first_name }} {{ profile.profile.last_name }}</p>
+            <p class = "pro-data"><span class="design">Birth Date : </span> {{ profile.profile.birth_date }}</p>
+            {% if  profile.profile.gender == 'M'%}
+                <p class = "pro-data"><span class="design">Gender : </span> Male</p>
+            {% else %}
+                <p class = "pro-data"><span class="design">Gender : </span> Female</p>
+            {% endif %}
+            <p class = "pro-data"><span class="design">Email : </span>{{ profile.profile.email }}</p>
+            {% if profile.profile.bio %}
+                <p class = "pro-data"><span class="design">Bio : </span>{{ profile.profile.bio }}</p>
+            {% else %}
+                <p class = "pro-data"><span class="design"> Bio : </span> No Bio </p>
+            {% endif %}
+            {% if profile.profile.country %}
+                <p class = "pro-data"><span class="design">Country : </span>{{ profile.profile.country }}</p>
+            {% else %}
+                <p class = "pro-data"><span class="design"> Country : </span> Asgard </p>
+            {% endif %}
+            <div class="buttons">
+                {% if if_friend.request_status == 'A' %}
+                    <form action={% url 'login:chat' %} method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="sender" value="{{ request.user.username }}">
+                        <input type="hidden" name="receiver" value="{{ profile.username }}">
+                        <input type="hidden" name="profile" value="{{ profile.username }}">
+                        <button type="submit" class="chat">Chat</button>
+                    </form>
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="unfriend" value="{{ profile.username }}">
+                        <input type="hidden" name="profile" value="{{ profile.username }}">
+                        <button type="submit" class="reject">Unfriend</button>
+                    </form>
+                {% endif %}
+                {% if if_friend.request_status == 'P' and if_friend.sender_or_receiver == "R" %}
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="profile" value="{{ profile.username }}">
+                        <input type="hidden" name="confirm" value="{{ profile.username }}">
+                        <button type="submit">Confirm request</button>
+                    </form>
+                {% endif %}
+                {% if if_friend.request_status == 'P' and if_friend.sender_or_receiver == "S" %}
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="profile" value="{{ profile.username }}">
+                        <input type="hidden" name="cancel" value="{{ profile.username }}">
+                        <button type="submit">cancel request</button>
+                    </form>
+                {% endif %}
+                {% if if_friend == None %}
+                    <form action="" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="profile" value="{{ profile.username }}">
+                        <input type="hidden" name="add" value="{{ profile.username }}">
+                        <button type="submit">Add friend</button>
+                    </form>
+                {% endif %}
+                <form action="" method="post"></form>
+            </div>
+        </div>
+    </div>
+    <div class="fpost">
+
+    </div>
+</section>
+{% endblock %}

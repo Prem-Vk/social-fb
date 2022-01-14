@@ -398,3 +398,69 @@ def get_message(request, sender, receiver):
     return JsonResponse(
         {"messages": chats, "sender": sender, "user": request.user.username}
     )
+
+
+@login_required
+def friend_profile(request, user):
+    profuser = User.objects.get(username=user)
+    try:
+        if_friend = relation.objects.get(friend1=request.user, friend2=profuser.profile)
+    except ObjectDoesNotExist:
+        if_friend = None
+    if request.method == "POST":
+        fpro = request.POST.get("profile")
+        unfriend = request.POST.get("unfriend")
+        accept = request.POST.get("confirm")
+        cancel = request.POST.get("cancel")
+        add = request.POST.get("add")
+        if unfriend is not None:
+            pend_user = User.objects.get(username=unfriend)
+            friend1 = relation.objects.get(
+                friend1=request.user, friend2=pend_user.profile, request_status="A"
+            )
+            friend2 = relation.objects.get(
+                friend1=pend_user, friend2=request.user.profile, request_status="A"
+            )
+            friend1.delete()
+            friend2.delete()
+        if accept is not None:
+            pend_user = User.objects.get(username=accept)
+            accept1 = relation.objects.get(
+                friend1=request.user, friend2=pend_user.profile
+            )
+            accept2 = relation.objects.get(
+                friend1=pend_user,
+                friend2=request.user.profile,
+            )
+            accept1.request_status = "A"
+            accept2.request_status = "A"
+            accept1.save()
+            accept2.save()
+        if cancel is not None:
+            cancel_request = User.objects.get(username=cancel)
+            sender = relation.objects.get(
+                friend1=cancel_request, friend2=request.user.profile, request_status="P"
+            )
+            receiver = relation.objects.get(
+                friend1=request.user, friend2=cancel_request.profile, request_status="P"
+            )
+            sender.delete()
+            receiver.delete()
+        if add is not None:
+            pend_new = User.objects.get(username=add)
+            relation.objects.create(
+                friend1=request.user,
+                friend2=pend_new.profile,
+                sender_or_receiver="S",
+                request_status="P",
+            )
+            relation.objects.create(
+                friend1=pend_new,
+                friend2=request.user.profile,
+                sender_or_receiver="R",
+                request_status="P",
+            )
+        return redirect(reverse("login:fpro", kwargs={"user": fpro}))
+    return render(
+        request, "fpro/fpro.html", {"profile": profuser, "if_friend": if_friend}
+    )

@@ -93,7 +93,7 @@
     <div class="contacts">
         <h2>Friends</h1>
         {% for friend in all_friends %}
-            <a href="" class="profile-name">
+            <a href={% url 'login:fpro' friend.friend2.user.username %} class="profile-name">
                 <img src="{{ friend.friend2.avatar.url }}" height="30px" width="30px"/>
                 <p>{{friend.friend2.first_name}} {{friend.friend2.last_name}}</p>
             </a>

@@ -42,13 +42,13 @@ Search-Facebook
                 {% csrf_token %}
                 {% if rp.sender_or_receiver == "S" and rp.request_status == "P" %}
                     <img src="{{ rp.friend2.avatar.url}}" alt="" height="50px" width="50px" style="border-radius: 100px;">
-                    <h3>{{rp.friend2.first_name}} {{ rp.friend2.last_name }}</h3>
+                    <a href = "{% url 'login:fpro' rp.friend2.user.username %}">{{rp.friend2.first_name}} {{ rp.friend2.last_name }}</a>
                     <input type="hidden" name="cancel" value="{{ rp.friend2.user }}">
                     <input type="hidden" name="search" value="{{ search }}">
                     <button type="submit"><img src="{% static 'icons/pending.png' %}" height="50px" width="50px" alt="" title="Cancel friend request send to {{rp.friend2.first_name}} {{ rp.friend2.last_name }}"></button>
                 {% else %}
                     <img src="{{ rp.friend2.avatar.url}}" alt="" height="50px" width="50px" style="border-radius: 100px;">
-                    <h3>{{rp.friend2.first_name}} {{ rp.friend2.last_name }}</h3>
+                    <a href = "{% url 'login:fpro' rp.friend2.user.username %}">{{rp.friend2.first_name}} {{ rp.friend2.last_name }}</a>
                     <input type="hidden" name="pending" value="{{ rp.friend2.user }}">
                     <input type="hidden" name="search" value="{{ search }}">
                     <button type="submit" title="Accept request"><img src="{% static 'icons/accept-friend.png' %}" height="50px" width="50px" alt="" title="Accept friend request of {{rp.friend2.first_name}} {{ rp.friend2.last_name }}"></button>
@@ -61,7 +61,7 @@ Search-Facebook
         <form action="" method="post" class="friend-form">
                 {% csrf_token %}
                 <img src="{{ ra.profile.avatar.url}}" alt="" height="50px" width="50px" style="border-radius: 100px;">
-                <h3>{{ra.profile.first_name}} {{ ra.profile.last_name }}</h3>
+                <a href = "{% url 'login:fpro' ra.username %}">{{ra.profile.first_name}} {{ ra.profile.last_name }}</a>
                 <input type="hidden" name="accepted" value="{{ ra }}">
                 <input type="hidden" name="search" value="{{ search }}">
                 <button type="submit"><img src="{% static 'icons/chat.png' %}" height="40px" width="40px" alt="" title="Chat with {{ra.profile.first_name}} {{ ra.profile.last_name }}"></button>
@@ -74,7 +74,7 @@ Search-Facebook
             <form action="" method="post" class="friend-form">
                 {% csrf_token %}
                 <img src="{{ friend.avatar.url}}" alt="" height="50px" width="50px" style="border-radius: 100px;">
-                    <h3>{{friend.first_name}} {{ friend.last_name }}</h3>
+                    <a href = "{% url 'login:fpro' friend.user.username %}">{{friend.first_name}} {{ friend.last_name }}</a>
                     <input type="hidden" name="new" value = "{{ friend.user }}"">
                     <input type="hidden" name="search" value="{{ search }}">
                     <button type="submit"><img src="{% static 'icons/add-friend.png' %}" height="50px" width="50px" alt="" title="Add friend {{friend.first_name}} {{ friend.last_name }}"></button>
