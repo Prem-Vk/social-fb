@@ -12,6 +12,9 @@ section{
     text-align: center;
     grid-column: 2;
 }
+body{
+    font-family: Arial, Helvetica, sans-serif;
+}
 .content{
     margin-top: 20vh;
     padding: 0 2vw;
@@ -20,12 +23,16 @@ input{
     width: 70%;
     margin: 0.5vh 1vw;
     height: 5vh;
-    border: 1px solid black;
-    border-radius: 10px;
+    border: none;
+    border-bottom: 2px solid dodgerblue;
 }
 input[type=submit]{
+    border: none;
     background-color: dodgerblue;
     color: white;
+    border-radius: 30px;
+    margin-top: 1vh;
+    font-size: 17px;
 }
 a{
     margin: 1vh 1vw;
@@ -38,17 +45,24 @@ a:hover{
 hr{
     width: 75%;
     text-align: center;
+    color: darkgray;
 }
 button{
     height: 5vh;
     width: 70%;
-    border-radius: 10px;
-    border: 1px solid black;
+    border-radius: 30px;
+    border: none;
     background-color: green;
     color: white;
+    font-size: 17px;
 }
 h1{
     font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     color:dodgerblue;
     font-size: 4rem;
+}
+
+.forgot{
+    text-decoration: none;
+    color:darkgray;
 }
