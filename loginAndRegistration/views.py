@@ -1,3 +1,4 @@
+from email import message
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import (
     LoginForm,
@@ -7,9 +8,9 @@ from .forms import (
     UserProfileEditForm,
     PostForm,
 )
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import authenticate, login, logout
-from .models import Comment, Profile, Post, relation
+from .models import Comment, Profile, Post, relation, Chat
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
@@ -346,3 +347,54 @@ def like_counter(request):
                 reverse("login:profile", kwargs={"user": request.user.username})
             )
     return redirect(reverse("login:home", kwargs={"username": request.user.username}))
+
+
+@login_required
+def chat_message(request):
+    if request.method == "POST":
+        sender = request.POST.get("sender")
+        receiver = request.POST.get("receiver")
+        sender_profile = User.objects.get(username=sender)
+        receiver_profile = User.objects.get(username=receiver)
+        friends = relation.objects.filter(friend1=request.user, request_status="A")
+    else:
+        return redirect(
+            reverse("login:home", kwargs={"username": request.user.username})
+        )
+    return render(
+        request,
+        "chat/chat.html",
+        {"sender": sender_profile, "receiver": receiver_profile, "friends": friends},
+    )
+
+
+@login_required
+def send_message(request):
+    if request.method == "POST":
+        sender = request.POST.get("sender")
+        receiver = request.POST.get("receiver")
+        body = request.POST.get("body")
+        user1 = User.objects.get(username=sender)
+        user2 = User.objects.get(username=receiver)
+        Chat.objects.create(
+            sender=user1.profile,
+            receiver=user2.profile,
+            sender_username=user1.username,
+            receiver_username=user2.username,
+            message=body,
+        )
+    return HttpResponse(f"{sender} {receiver} {body}")
+
+
+@login_required
+def get_message(request, sender, receiver):
+    user1 = User.objects.get(username=sender)
+    user2 = User.objects.get(username=receiver)
+    chats_data = Chat.objects.filter(
+        Q(sender=user1.profile, receiver=user2.profile)
+        | Q(sender=user2.profile, receiver=user1.profile)
+    ).exclude(message="")
+    chats = list(chats_data.values())
+    return JsonResponse(
+        {"messages": chats, "sender": sender, "user": request.user.username}
+    )

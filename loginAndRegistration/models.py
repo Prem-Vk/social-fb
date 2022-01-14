@@ -85,3 +85,17 @@ class Comment(models.Model):
 
     def __str__(self) -> str:
         return str(self.pk)
+
+
+class Chat(models.Model):
+    sender = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="sender")
+    receiver = models.ForeignKey(
+        Profile, on_delete=models.CASCADE, related_name="receiver"
+    )
+    sender_username = models.CharField(max_length=40, blank=True)
+    receiver_username = models.CharField(max_length=40, blank=True)
+    message = models.TextField(max_length=400)
+    created = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.sender.user.username} to {self.receiver.user.username} - {self.message}"

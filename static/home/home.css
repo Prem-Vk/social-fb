@@ -75,8 +75,9 @@ body{
     height: 2vh;
 }
 .header form{
-    border: 2px solid black;
-    border-radius: 20px;
+    /* border: 2px solid black; */
+    border-bottom: 1px solid dodgerblue;
+    border-radius: 2px;
 }
 .friends-post .image{
     width:30vw;

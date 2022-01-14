@@ -66,8 +66,10 @@
         <div class="chat">
             <img src="{{ friend.friend2.avatar.url }}" alt="" height="100px" width="100px" style="border-radius: 100px;">
             <p>{{ friend.friend2.first_name }} {{friend.friend2.last_name}}</p>
-            <form action="" method="post">
+            <form action={% url 'login:chat' %} method="post">
                 {% csrf_token %}
+                <input type="hidden" name="sender" value="{{ user.username }}">
+                <input type="hidden" name="receiver" value="{{ friend.friend2.user.username }}">
                 <button type="submit" class="submit">Chat</button>
             </form>
             <form method="post">

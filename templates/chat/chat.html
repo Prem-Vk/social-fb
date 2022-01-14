@@ -1,0 +1,137 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat - Page</title>
+    <link rel="stylesheet" href="{% static 'chat/chat.css' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+</head>
+<body>
+    <section class="container">
+        <div class="header">
+            <a href="{% url 'login:home' request.user.username %}" style="text-decoration: none;"><h1> Social-FB</h1></a>
+            <form method="post" action="{% url 'login:search' %}">
+                {% csrf_token %}
+                <input type="text" name="search" id="" placeholder="Search FB">
+            <img src="{% static 'icons/search.png' %}" alt="Home", height="20px", width="20px">
+            <button type="submit"></button>
+            </form>
+        </div>
+        <div class="social">
+            <img src="{% static 'icons/home-page.png' %}" alt="Home", height="40px", width="40px">
+            <img src="{% static 'icons/friends.png' %}" alt="Friends", height="40px", width="60px">
+            <img src="{% static 'icons/videos.png' %}" alt="Watch", height="40px", width="40px">
+            <img src="{% static 'icons/market.png' %}" alt="Marketplace", height="40px", width="60px">
+            <img src="{% static 'icons/people.png' %}" alt="Groups", height="40px", width="40px">
+        </div>
+        <div class='user'>
+            <div class='profile'>
+                <img src="{{ request.user.profile.avatar.url }}" alt="", height="40px", width="40px" class="profile-image">&nbsp;&nbsp;
+                <a href="{% url 'login:profile' user=user.username %}" ><h3>{{ user.username }}</h3></a>
+            </div>
+            &nbsp;&nbsp;   
+            <a href="{% url 'login:logout' %}" class="logout">Log Out</a>
+        </div>
+    </section>
+    <section class="chats">
+        <div class="chat-area">
+            <div class="chat-profile">
+                <img src="{{ receiver.profile.avatar.url }}" alt="" height="50px" width="50px">&nbsp;&nbsp;&nbsp;
+                <h2>{{receiver.profile.first_name}} {{receiver.profile.last_name}}</h2>
+            </div>
+            <div class="chat-box" id="chat-box">
+                <div id="display" class="chat-display">
+                    
+                </div>
+            </div>
+            <script>
+                $(document).ready(function(){
+                    console.log('working')
+                setInterval(function(){
+                    $.ajax({
+                        type: 'GET',
+                        url : 'get/{{sender|safe}}/{{receiver|safe}}',
+                        success: function(response){
+                            console.log(response);
+                            $("#display").empty();
+                            for (var key in response.messages)
+                            {
+                                if (response.messages[key].sender_username === response.user){
+                                    var temp="<div class='container2'><p>"+response.messages[key].message+"</p><span class='time-left'>"+response.messages[key].created+"</span></div>";
+                                }
+                                else
+                                    var temp="<div class='darker'><p>"+response.messages[key].message+"</p><span class='time-left2'>"+response.messages[key].created+"</span></div>";
+                                $("#display").append(temp);
+                            }
+                            $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
+                        },
+                        error: function(response){
+                        }
+                    });
+                },1000);
+                })
+            </script>
+            <div class="message">
+                <form id="post-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="sender" id="sender" value="{{sender}}"">
+                    <input type="hidden" name="receiver" id="receiver" value="{{receiver}}"">
+                    <input type="text" name="body" id="body">
+                    <button type="submit" id="button-submit">Send</button>
+                </form>
+            </div>
+        </div>
+        <div class="all-friends">
+            <h3> Chat With: </h3>
+            {% for friend in friends %}
+                {% if friend.friend2.user.username == receiver.username %}
+                    <div class="friend-c">
+                        <img src="{{ friend.friend2.avatar.url }}" alt="" height="50px" width="50px" style="border-radius: 100px;">
+                        <p>{{ friend.friend2.first_name }} {{friend.friend2.last_name}}</p>
+                        <form action={% url 'login:chat' %} method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="sender" value="{{ user.username }}">
+                            <input type="hidden" name="receiver" value="{{ friend.friend2.user.username }}">
+                            <button type="submit" class="submit">Chat</button>
+                        </form>
+                    </div>
+                {% else %}
+                    <div class="friend">
+                        <img src="{{ friend.friend2.avatar.url }}" alt="" height="50px" width="50px" style="border-radius: 100px;">
+                        <p>{{ friend.friend2.first_name }} {{friend.friend2.last_name}}</p>
+                        <form action={% url 'login:chat' %} method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="sender" value="{{ user.username }}">
+                            <input type="hidden" name="receiver" value="{{ friend.friend2.user.username }}">
+                            <button type="submit" class="submit">Chat</button>
+                        </form>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </section>
+</body>
+<script type="text/javascript">
+    $(document).on('submit','#post-form',function(e){
+      e.preventDefault();
+      console.log("done")
+      $.ajax({
+        type:'POST',
+        url:'{% url 'login:send' %}',
+        data:{
+            sender:$('#sender').val(),
+            receiver:$('#receiver').val(),
+            body:$('#body').val(),
+            csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+        },
+        success: function(data){
+
+        }
+      });
+      document.getElementById('body').value = '';
+    });
+  </script>
+</html>

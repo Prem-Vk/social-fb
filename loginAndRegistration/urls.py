@@ -13,4 +13,7 @@ urlpatterns = [
     path("friends", views.friends_page, name="friends"),
     path("comment/<int:pk>", views.post_comment, name="comment"),
     path("like", views.like_counter, name="likes"),
+    path("chat", views.chat_message, name="chat"),
+    path("get/<str:sender>/<str:receiver>", views.get_message, name="get"),
+    path("send", views.send_message, name="send"),
 ]
